@@ -1,5 +1,6 @@
 <?php
-require("twitteroauth/twitteroauth/twitteroauth.php");  
+require("twitteroauth/twitteroauth/twitteroauth.php"); 
+ include 'conn.php'; 
 session_start();
 
 if(!empty($_GET['oauth_verifier']) && !empty($_SESSION['oauth_token']) && !empty($_SESSION['oauth_token_secret'])){  
@@ -14,10 +15,6 @@ if(!empty($_GET['oauth_verifier']) && !empty($_SESSION['oauth_token']) && !empty
 	// Print user's info  
 	//print_r($user_info);
 
-	/* write to the db */
-	mysql_connect('localhost', 'root', 'root');  
-	mysql_select_db('fitness');
-	
 	if(!empty($_SESSION['username'])){  
 	    // User is logged in, redirect  
 	    header('Location: index.php');  
