@@ -22,14 +22,28 @@
           <link href='http://fonts.googleapis.com/css?family=Signika' rel='stylesheet' type='text/css'>
         <link href='css/bootstrap-responsive.min.css' rel='stylesheet' type='text/css'> 
         <style type="text/css">
+           body{
+             background-color: #000;
+             color: #fff;
+           }
+
+           .ideaname{
+            color: #aaa;
+           }
            h2 a
            {
-            color: #59b259;
+            /*color: #59b259;*/
+            color: #F5385E;
             font-weight: bold;
             text-decoration: none;
-             font: bold 1em 'Signika', sans-serif;
-             
-             text-shadow: 0.1em 0.1em #eee
+            font: bold 2em 'Signika', sans-serif;            
+           }
+           
+           h2 a:hover
+           {
+            /*color: #59b259;*/
+             color: #F5385E;
+            font-weight: bold;            
            }
 
            .uppercase{
@@ -44,10 +58,13 @@
            {
             color: #ccc;
            }
+           .pink{
+            color: #F5385E;
+           }
           .green{
             color: #59b259;
             font-weight: bold;
-          }
+           }
            .red
            {
             color: red;
@@ -58,11 +75,6 @@
             list-style: none;
            }
 
-           h2 a:hover
-           {
-            color: #59b259;
-            font-weight: bold;            
-           }
 
           li {
                 position: relative;
@@ -82,7 +94,7 @@
             display: block;
             font-weight: bold; 
             padding: 10px;    
-            text-shadow: 0.1em 0.1em #eee    
+            
           }
 
           .center {
@@ -92,11 +104,13 @@
             content: "";
             margin: 5px 0;
             display: block;
-            border-top : solid 1px #4F9E51;    
+            /*border-top : solid 1px #4F9E51;    */
+            border-top: solid 1px #F5385E;
             height: 15px;
             
             -moz-border-radius: 5px;
-border-radius: 5px;
+            border-radius: 5px;
+          
           background: #59b259; /* Old browsers */
 background: -moz-linear-gradient(top,  #59b259 31%, #458a45 73%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(31%,#59b259), color-stop(73%,#458a45)); /* Chrome,Safari4+ */
@@ -105,8 +119,17 @@ background: -o-linear-gradient(top,  #59b259 31%,#458a45 73%); /* Opera 11.10+ *
 background: -ms-linear-gradient(top,  #59b259 31%,#458a45 73%); /* IE10+ */
 background: linear-gradient(to bottom,  #59b259 31%,#458a45 73%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#59b259', endColorstr='#458a45',GradientType=0 ); /* IE6-9 */
-
            
+
+           background: #ff6bb7; /* Old browsers */
+background: -moz-linear-gradient(top,  #ff6bb7 0%, #f5385e 94%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff6bb7), color-stop(94%,#f5385e)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #ff6bb7 0%,#f5385e 94%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #ff6bb7 0%,#f5385e 94%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #ff6bb7 0%,#f5385e 94%); /* IE10+ */
+background: linear-gradient(to bottom,  #ff6bb7 0%,#f5385e 94%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6bb7', endColorstr='#f5385e',GradientType=0 ); /* IE6-9 */
+
           }
 
           .vote.v-10
@@ -188,10 +211,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#59b259', end
     </head>
     <body >    
     <header class="container-fluid">       
-            <h2><a class="brand" href='index.php'>Idea Time</a><span class="small gray">.us</span></h2>            
+            <h2><a class="brand" href='index.php'>IdeaTime</a><span class="small gray">.us</span></h2>            
     </header>
     <section class="container-fluid">
-       <p class="tagline center no-loggedin uppercase"><?=(!empty($_SESSION['username']) ? 'Welcome ' . $_SESSION['username'] : 'Have an idea to share?'); ?></p>
+       <p class="tagline center no-loggedin uppercase">
+    <?php
+       if(!empty($_SESSION['name'])) { 
+        ?><img src="<?php echo $_SESSION['avatar']?>"> <?php
+        echo $_SESSION['name'];
+      }else{
+         echo 'Have an idea to share?'; 
+      }?>
+
+       </p>
         <p class="tagline center">
            <?php if(empty($_SESSION['username'])){  ?>
                        <a href="twitter_login.php" class="uppercase">Sign in with your twitter account </a>
@@ -199,29 +231,27 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#59b259', end
     </section>
     <?php if(!empty($_SESSION['username']) && (is_null($_SESSION['author']))){  ?>
     <section class="container-fluid ">
-      <p class="tagline center uppercase green">Sorry this site is by invitation only</p>
+      <p class="tagline center uppercase pink">Sorry this site is by invitation only</p>
       <p class="center"><a href="mailto:luciana.bruscino@gmail.com">Request to be invited</a></p>
     </section>
     <?php } ?>
 
     <?php if(!empty($_SESSION['username']) && (!is_null($_SESSION['author']))){  ?>
-    <section class="container-fluid ">
-      <p class="tagline">Welcome <?php echo $_SESSION['username']; ?></p>
-    
+    <section class="container-fluid ">      
         <div class="row-fluid ">
           <div class="span12 hero-unit">
            
             <div class="row-fluid">              
               <div class="span6">
-                <h3>What is your next idea?</h3>
+                <h3 class="pink">What is your next idea?</h3>
               
                <form class="well" action="" method="POST">
                   <input type="text" class="span9" id="nameidea" placeholder="what is the idea name?">                 
-                  <button type="submit" id="addidea" class="btn btn-success">Send</button>
+                  <button type="submit" id="addidea" class="btn btn-inverse">Send</button>
                 </form>
-           
+            </div>
             <div class="span6">
-                <h3>Vote for the worst idea</h3>
+                <h3 class="pink">Vote for the worst idea</h3>
                 <div class="well1">
                     <ul id="voting">
                     <?php                        

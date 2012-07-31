@@ -12,8 +12,8 @@ function getPollData(){
         $hasvoted = false;
         echo "<li >";
         if(!$hasvoted)
-          echo '<button class="votebutton btn btn-warning" id="i-'.$row['id'].'" type="submit" data-idea="'.$row['id'].'" >vote</button>';
-        echo "<span>".$row['name']. $votes."</span><div class='vote v-".$rank."'></div>";                                                        
+          echo '<button class="votebutton btn btn-inverse" id="i-'.$row['id'].'" type="submit" data-idea="'.$row['id'].'" >vote</button>';
+        echo "<span class='ideaname'>".$row['name']. $votes."</span><div class='vote v-".$rank."'></div>";                                                        
         echo "</li>";
     }
   }
