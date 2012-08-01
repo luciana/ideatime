@@ -2,11 +2,7 @@
 <?php
   require("twitteroauth/twitteroauth/twitteroauth.php");  
   include 'conn.php'; 
-  session_start(); 
-
-  if (isset($_POST['ideaId'])) {
-        $ideaId     = mysql_real_escape_string($_POST['ideaId']);
-  }
+  session_start();   
 ?>
 <html>
     <head>
@@ -28,7 +24,7 @@
            }
 
            .ideaname{
-            color: #aaa;
+            color: #000;
            }
            h2 a
            {
@@ -107,19 +103,9 @@
             /*border-top : solid 1px #4F9E51;    */
             border-top: solid 1px #F5385E;
             height: 15px;
-            
+            clear: both;
             -moz-border-radius: 5px;
-            border-radius: 5px;
-          
-          background: #59b259; /* Old browsers */
-background: -moz-linear-gradient(top,  #59b259 31%, #458a45 73%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(31%,#59b259), color-stop(73%,#458a45)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top,  #59b259 31%,#458a45 73%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top,  #59b259 31%,#458a45 73%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top,  #59b259 31%,#458a45 73%); /* IE10+ */
-background: linear-gradient(to bottom,  #59b259 31%,#458a45 73%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#59b259', endColorstr='#458a45',GradientType=0 ); /* IE6-9 */
-           
+            border-radius: 5px;          
 
            background: #ff6bb7; /* Old browsers */
 background: -moz-linear-gradient(top,  #ff6bb7 0%, #f5385e 94%); /* FF3.6+ */
@@ -167,45 +153,48 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6bb7', end
             $('#addidea').click(function(){
               $('#voting').fadeOut('slow'); 
               var name = $('#nameidea').val();
-              var author = "<?php echo $_SESSION['username']; ?>";
+              var author = "<?php echo $_SESSION['username']; ?>";              
               $.ajax({              
-                  type: "POST",               
-                  url: "process.php",                
-                  data: { name: name, author: author,action: "add" },                
-                  success: function(html) {                                                    
-                     $('#voting').html(html);
-                     $('#voting').fadeIn('slow'); 
-                   }
-                 });
+                    type: "POST",               
+                    url: "process.php",                
+                    data: { name: name, author: author,action: "add" },                
+                    success: function(html) {                                                    
+                       $('#voting').html(html);
+                       $('#voting').fadeIn('slow'); 
+                     }
+                   });
             });
 
-            function show(){
-              $.ajax({              
-                  type: "GET",               
-                  url: "process.php",                                        
-                  success: function(html) {                                                    
-                     $('#voting').html(html);
-                     $('#voting').fadeIn('slow'); 
-                      $(".votebutton").click(function(){                        
-                        var ideaId = this.getAttribute('data-idea');
-                        $('#voting').fadeOut('slow'); 
-                          $.ajax({              
-                            type: "POST",               
-                            url: "process.php?action=",                
-                            data: { ideaId: ideaId, action: "vote" },                
-                            success: function(html) {                                 
-                               $('#voting').html(html);
-                               $('#voting').fadeIn('slow'); 
-                               $('.votebutton').hide();
-                            }
-                          });
-                      });
-                  }
-                });
-            }
-
-            
-            show();
+            $('.votebadbutton').click(function(){  
+                 $('#voting').fadeOut('slow'); 
+                  var badIdeaId = this.getAttribute('data-idea-bad');                 
+                  $.ajax({              
+                      type: "POST",               
+                      url: "process.php?action=",                
+                      data: { ideaBadId: badIdeaId, action: "votebad" },                
+                      success: function(html) {                                 
+                         //$('#voting').html(html);
+                         $('.ideainfo').html(html);
+                         $('#voting').fadeIn('slow');                         
+                      }
+                    });
+              });
+           
+            $(".votegoodbutton").click(function(){                        
+                $('#voting').fadeOut('slow'); 
+                var goodIdeaId = this.getAttribute('data-idea-good');                              
+                $.ajax({              
+                    type: "POST",               
+                    url: "process.php?action=",                
+                    data: { ideaGoodId: goodIdeaId, action: "votegood" },                
+                    success: function(html) {                                 
+                       $('#voting').html(html);
+                       //var test = html;
+                       //$('.ideainfo').html(html);
+                       $('#voting').fadeIn('slow');                      
+                    }
+                  });
+              });                              
         })
         </script>
     </head>
@@ -215,7 +204,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6bb7', end
     </header>
     <section class="container-fluid">
        <p class="tagline center no-loggedin uppercase">
-    <?php
+      <?php
        if(!empty($_SESSION['name'])) { 
         ?><img src="<?php echo $_SESSION['avatar']?>"> <?php
         echo $_SESSION['name'];
@@ -237,32 +226,33 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff6bb7', end
     <?php } ?>
 
     <?php if(!empty($_SESSION['username']) && (!is_null($_SESSION['author']))){  ?>
-    <section class="container-fluid ">      
-        <div class="row-fluid ">
-          <div class="span12 hero-unit">
-           
-            <div class="row-fluid">              
-              <div class="span6">
-                <h3 class="pink">What is your next idea?</h3>
-              
+    <section class="container-fluid ">             
+          <div class="row-fluid">                    
+                <h3 class="pink">What is your next idea?</h3>              
                <form class="well" action="" method="POST">
                   <input type="text" class="span9" id="nameidea" placeholder="what is the idea name?">                 
                   <button type="submit" id="addidea" class="btn btn-inverse">Send</button>
                 </form>
             </div>
-            <div class="span6">
-                <h3 class="pink">Vote for the worst idea</h3>
-                <div class="well1">
-                    <ul id="voting">
+            <div class="row-fluid">        
+                <h3 class="pink">Vote for the idea</h3>
+                <div id="voting" class="well">
+                   
                     <?php                        
-                      getPollData();
-                    ?>  
-                    </ul>
+                    $query = mysql_query("SELECT id, name, good, bad FROM ideas ORDER BY good desc");                       
+                    while($row = mysql_fetch_array($query)){       
+                        $good = ($row['good']>0)  ?  " ( +".$row['good'].")" : "";      
+                        $bad = ($row['bad']>0)  ?  " ( - ".$row['bad'].")" : "";      
+                      ?>             
+                      <div class='well'>
+                        <div class="span1"><button class="votegoodbutton btn btn-inverse" type="submit" data-idea-good="<?php echo $row['id']?>" ><i class="icon-thumbs-up icon-white"></i></button></div> 
+                        <div class="span1"><button class="votebadbutton btn btn-inverse"  type="submit" data-idea-bad="<?php echo $row['id'] ?>" ><i class="icon-thumbs-down icon-white"></i></button></div>       
+                        <div class='ideainfo'><span class='span10 ideaname'><?php echo $row['name']. $good. $bad ?></span></div>
+                      </div>                     
+                  <?php } ?>  
+                    
                 </div>
-            </div>
-            </div>
-          </div>
-        </div>       
+            </div>      
     </section>
       <?php } ?></p>  
     <footer>
