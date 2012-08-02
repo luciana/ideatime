@@ -2,24 +2,68 @@
 include 'conn.php'; 
 
 
+function array2json($arr) { 
+    if(function_exists('json_encode')) return json_encode($arr); //Lastest versions of PHP already has this functionality.
+    $parts = array(); 
+    $is_list = false; 
+
+    //Find out if the given array is a numerical array 
+    $keys = array_keys($arr); 
+    $max_length = count($arr)-1; 
+    if(($keys[0] == 0) and ($keys[$max_length] == $max_length)) {//See if the first key is 0 and last key is length - 1
+        $is_list = true; 
+        for($i=0; $i<count($keys); $i++) { //See if each key correspondes to its position 
+            if($i != $keys[$i]) { //A key fails at position check. 
+                $is_list = false; //It is an associative array. 
+                break; 
+            } 
+        } 
+    } 
+
+    foreach($arr as $key=>$value) { 
+        if(is_array($value)) { //Custom handling for arrays 
+            if($is_list) $parts[] = array2json($value); /* :RECURSION: */ 
+            else $parts[] = '"' . $key . '":' . array2json($value); /* :RECURSION: */ 
+        } else { 
+            $str = ''; 
+            if(!$is_list) $str = '"' . $key . '":'; 
+
+            //Custom handling for multiple data types 
+            if(is_numeric($value)) $str .= $value; //Numbers 
+            elseif($value === false) $str .= 'false'; //The booleans 
+            elseif($value === true) $str .= 'true'; 
+            else $str .= '"' . addslashes($value) . '"'; //All other things 
+            // :TODO: Is there any more datatype we should be in the lookout for? (Object?) 
+
+            $parts[] = $str; 
+        } 
+    } 
+    $json = implode(',',$parts); 
+     
+    if($is_list) return '[' . $json . ']';//Return numerical JSON 
+    return '{' . $json . '}';//Return associative JSON 
+} 
+
 function getPollData(){                               
-    //$query = mysql_query("SELECT sum(good)as'sum' FROM ideas");
-    //$count =mysql_fetch_array($query);
-    $query = mysql_query("SELECT id, name, good, bad FROM ideas ORDER BY good desc");                       
-    $out ='';
+    $query = mysql_query("SELECT sum(good)as'sum' FROM ideas");
+    $count =mysql_fetch_array($query);
+    $query = mysql_query("SELECT id, name, good, bad FROM ideas ORDER BY good desc");                         
+    $data = array();
     while($row = mysql_fetch_array($query)){       
 
         $good = ($row['good']>0)  ?  " ( +".$row['good'].")" : "";      
         $bad = ($row['bad']>0)  ?  " ( - ".$row['bad'].")" : "";      
-      //  $rank =  ($row['good']>0)  ?  round(($row['good']/$count['sum'])*10): "0";              
-        $out .= "<div class='well'>";      
-        $out .= '<div class="span1"><button class="votegoodbutton btn btn-inverse" id="i-'.$row['id'].'" type="submit" data-idea-good="'.$row['id'].'" ><i class="icon-thumbs-up icon-white"></i></button></div>'; 
-        $out .=  '<div class="span1"><button class="votebadbutton btn btn-inverse" id="i-d-'.$row['id'].'" type="submit" data-idea-bad="'.$row['id'].'" ><i class="icon-thumbs-down icon-white"></i></button></div>';       
-        $out .=  "<span class='span10 ideaname'>".$row['name']. $good. $bad."</span><br>";                                                            
-        $out .=  "</div>";
-        //echo "<div class='vote v-".$rank."'></div>";  
+     
+        $out = array(
+                'id' => $row['id'],
+                'bad' => $row['bad'],
+                'good' => $row['good'],
+                'name'=> $row['name'],
+                'total'=> $count['sum']
+            );
+        array_push($data,$out);
     }
-    echo $out;
+    return json_encode($data);
   }
 
 if (isset($_POST['action'])=='votegood') {
