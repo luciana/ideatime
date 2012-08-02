@@ -145,7 +145,8 @@
                         <div id="idea-count-good-<?php echo $row['id']?>" class='good vote v-<?php echo $rankgood ?>'><span class="votecount"><?php echo $good ?></span></div>
                         <div id="idea-count-bad-<?php echo $row['id']?>"  class='bad vote v-<?php echo $rankbad ?>'><span class="votecount"><?php echo $bad ?></span></div>                     
                       </div>                     
-                  <?php } ?>                      
+                  <?php } ?>  
+                    
                 </div>
             </div>      
     </section>
