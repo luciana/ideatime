@@ -1,9 +1,9 @@
-<!DOCTYPE html>
 <?php
-  require("twitteroauth/twitteroauth/twitteroauth.php");  
-  include 'conn.php'; 
-  session_start();   
+  session_start();  
+ require("twitteroauth/twitteroauth/twitteroauth.php");  
+  include 'conn.php';  
 ?>
+<!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -11,7 +11,7 @@
 
         <!-- Javascript
           ================================================== -->
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>	
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
         <!-- CSS
           ================================================== -->
         <link href='css/bootstrap.min.css' rel='stylesheet' type='text/css'>
@@ -25,40 +25,39 @@
                 var data = eval(data);
                 for (var i = 0; i < data.length; i++) { 
                   var name = "idea-name-" + data[i].id;
-                  var barGood = "idea-count-good-"+ data[i].id;
-                  var barBad = "idea-count-bad-"+ data[i].id;
-                  var total = data[i].total;
-                  var badRank = Math.round((data[i].bad/total)*10);
-                  var goodRank = Math.round((data[i].good/total)*10);
+                  var bar = "idea-count-"+ data[i].id;
+                  var goodcount = "idea-good-id-" + data[i].id;       
+                  var badcount = "idea-bad-id-" + data[i].id;    
+                  var count = "idea-all-id-" + data[i].id;   
                   var display = data[i].name;
-                  $('#'+name).text(display);
-                  $('#'+barGood).html('<span class="votecount">'+data[i].good +'</span>');
-                  $('#'+barBad).html('<span class="votecount">'+data[i].bad+'</span>');                  
-                  $('#'+barGood).removeClass();
-                  $('#'+barBad).removeClass();
-                  $('#'+barBad).addClass("bad vote v-"+badRank);
-                  $('#'+barGood).addClass("good vote v-"+goodRank);                              
+                  var rank = Math.round(((parseInt(data[i].good) + parseInt(data[i].bad))/data[i].total)*10);
+                  var rankClass = "good vote v-"+rank;
+                  $('#'+name).text(display);   
+                  $('#'+goodcount).text(data[i].good); 
+                  $('#'+badcount).text(data[i].bad); 
+                  $('#'+count).text(parseInt(data[i].good) + parseInt(data[i].bad));
+                  $('#'+bar).removeClass();
+                  $('#'+bar).addClass(rankClass);
                 }
 
             } 
 
             $('#addidea').click(function(){
-              $('#voting').fadeOut('slow'); 
+              //$('#voting').fadeOut('slow'); 
               var name = $('#nameidea').val();
               var author = "<?php echo $_SESSION['username']; ?>";              
               $.ajax({              
                     type: "POST",               
-                    url: "process.php",                
-                    data: { name: name, author: author,action: "add" },                
-                    success: function(html) {                                                    
-                       $('#voting').html(html);
-                       $('#voting').fadeIn('slow');                        
+                    url: "process.php?action=",                
+                    data: { name: name, author:author, action: "add" },                      
+                    success: function(data) {                                                    
+                        //updateData(data);   
+                        alert(data);                      
                      }
                    });
             });
 
-            $('.votebadbutton').click(function(){  
-                 //$('#voting').fadeOut('slow'); 
+            $('.votebadbutton').click(function(){                  
                   var badIdeaId = this.getAttribute('data-idea-bad');                 
                   $.ajax({              
                       type: "POST",               
@@ -70,16 +69,13 @@
                     });
               });
            
-            $(".votegoodbutton").click(function(){                        
-                //$('#voting').fadeOut('slow'); 
+            $(".votegoodbutton").click(function(){                                        
                 var goodIdeaId = this.getAttribute('data-idea-good');                              
                 $.ajax({              
                     type: "POST",               
                     url: "process.php?action=",                
                     data: { ideaGoodId: goodIdeaId, action: "votegood" },                
-                    success: function(data) {                                                      
-                      //$('#voting').html(html);
-                      //$('#voting').fadeIn('slow');     
+                    success: function(data) {                                                                              
                       updateData(data);                
                     }
                   });
@@ -128,22 +124,21 @@
                 <div id="voting" class="well">
                    
                     <?php        
-                    $query = mysql_query("SELECT sum(good)as'sum' FROM ideas");
-                    $count =mysql_fetch_array($query);                
+                    $query = mysql_query("SELECT sum(good) + sum(bad) as'sum' FROM ideas");
+                    $total =mysql_fetch_array($query);                  
                     $query = mysql_query("SELECT id, name, good, bad FROM ideas ORDER BY good desc");                       
                     while($row = mysql_fetch_array($query)){       
                         $good = ($row['good']>0)  ?  $row['good'] : 0;      
                         $bad = ($row['bad']>0)  ?  $row['bad']: 0;  
-                        $sum = $count['sum'];
-                        $rankgood =  ($good>0)  ?  round(($good/$sum)*10): "1";  
-                        $rankbad=  ($bad>0)  ?  round(($bad/$sum)*10): "1";  
+                        $allvotes = $good + $bad;  
+                        $totalvotes = ($total['sum']==0)?1:$total['sum'];                      
+                        $rank =  round(($allvotes/$totalvotes)*10);
                       ?>             
                       <div class='well'>
-                        <div class="span1"><a class="votegoodbutton btn btn-inverse" id="idea-good-id-<?php echo $row['id']?>" type="submit" data-idea-good="<?php echo $row['id']?>" ><i class="icon-thumbs-up icon-white"></i></a></div> 
-                        <div class="span1"><a class="votebadbutton btn btn-inverse"  id="idea-bad-id-<?php echo $row['id']?>" type="submit" data-idea-bad="<?php echo $row['id'] ?>" ><i class="icon-thumbs-down icon-white"></i></a></div>       
+                        <div class="span1"><a class="votegoodbutton btn btn-inverse"  type="submit" data-idea-good="<?php echo $row['id']?>" ><i class="icon-thumbs-up icon-white"></i><span class="votecount" id="idea-good-id-<?php echo $row['id']?>"><?php echo $good ?></span></a></div> 
+                        <div class="span1"><a class="votebadbutton btn btn-inverse"   type="submit" data-idea-bad="<?php echo $row['id'] ?>" ><i class="icon-thumbs-down icon-white"></i><span class="votecount" id="idea-bad-id-<?php echo $row['id']?>"><?php echo $bad ?></span></a></div>       
                         <div class='ideainfo'><span class='span10 ideaname' id="idea-name-<?php echo $row['id']?>"><?php echo $row['name'] ?></span></div>
-                        <div id="idea-count-good-<?php echo $row['id']?>" class='good vote v-<?php echo $rankgood ?>'><span class="votecount"><?php echo $good ?></span></div>
-                        <div id="idea-count-bad-<?php echo $row['id']?>"  class='bad vote v-<?php echo $rankbad ?>'><span class="votecount"><?php echo $bad ?></span></div>                     
+                        <div id="idea-count-<?php echo $row['id']?>" class='good vote v-<?php echo $rank ?>'><span class="votecount" id="idea-all-id-<?php echo $row['id']?>"><?php echo $allvotes ?></span></div>
                       </div>                     
                   <?php } ?>  
                     
@@ -151,7 +146,12 @@
             </div>      
     </section>
       <?php } ?></p>  
-    <footer>
+    <footer class="container-fluid ">
+              
+          <div class="well">                    
+               <span style="color:#000"> Copyright 2012 - All ideas in this site are of sole ownership of the author. It can not be used without the permission of the author</span> 
+               
+            </div>
     </footer>
 
 
