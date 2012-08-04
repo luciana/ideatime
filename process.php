@@ -20,31 +20,35 @@ function getPollData(){
   }
 
 if (isset($_POST['action'])=='votegood') {
-    if(isset($_POST['ideaGoodId'])){
-        $id = $_POST['ideaGoodId'];
+    $id = $_POST['ideaGoodId'];
+    if(isset($id)){       
         $query  = "UPDATE ideas SET good = good + 1 WHERE id =".$id;
         mysql_query($query);
-       echo getPollData();
+        echo getPollData();
+       die();
     }
 }
 
 if (isset($_POST['action'])=='votebad') {
-    if(isset($_POST['ideaBadId'])){
-        $id = $_POST['ideaBadId'];
+    $id = $_POST['ideaBadId'];
+    if(isset($id)){     
         $query  = "UPDATE ideas SET bad = bad + 1 WHERE id =".$id;
         mysql_query($query);
        echo getPollData();
+       die();
+
     }
 }
 
-if (isset($_POST['action'])=='add') {
-    if(isset($_POST['name']) && isset($_POST['author'])){
-        $name = $_POST['name'];
-        $author =  $_POST['author'];
-        $query  = "INSERT INTO ideas (name, author) VALUES ('".$name."', '".$author."')";  
-        //$query  = "INSERT INTO ideas (name, author) VALUES ('".$name."', 'luciana123_2002')"; 
-        mysql_query($query);    
+if (isset($_POST['action'])=='addidea') {
+    $name = $_POST['name'];
+    $author = $_POST['author'];
+    if(isset($name) && isset($author)){
+        $query  = "INSERT INTO ideas (name, author) VALUES ('$name','$author')";
+        mysql_query($query);
         echo getPollData();
-    }   
+       die();
+   }
 }
+die();
 ?>

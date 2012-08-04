@@ -23,41 +23,59 @@
 
             function updateData(data){
                 var data = eval(data);
-                for (var i = 0; i < data.length; i++) { 
-                  var name = "idea-name-" + data[i].id;
-                  var bar = "idea-count-"+ data[i].id;
-                  var goodcount = "idea-good-id-" + data[i].id;       
-                  var badcount = "idea-bad-id-" + data[i].id;    
-                  var count = "idea-all-id-" + data[i].id;   
-                  var display = data[i].name;
-                  var rank = Math.round(((parseInt(data[i].good) + parseInt(data[i].bad))/data[i].total)*10);
-                  var rankClass = "good vote v-"+rank;
-                  $('#'+name).text(display);   
-                  $('#'+goodcount).text(data[i].good); 
-                  $('#'+badcount).text(data[i].bad); 
-                  $('#'+count).text(parseInt(data[i].good) + parseInt(data[i].bad));
-                  $('#'+bar).removeClass();
-                  $('#'+bar).addClass(rankClass);
+                if(data != null){
+                  for (var i = 0; i < data.length; i++) { 
+                    var name = "idea-name-" + data[i].id;
+                    var bar = "idea-count-"+ data[i].id;
+                    var goodcount = "idea-good-id-" + data[i].id;       
+                    var badcount = "idea-bad-id-" + data[i].id;    
+                    var count = "idea-all-id-" + data[i].id;   
+                    var display = data[i].name;
+                    var rank = Math.round(((parseInt(data[i].good) + parseInt(data[i].bad))/data[i].total)*10);
+                    var rankClass = "good vote v-"+rank;
+                    $('#'+name).text(display);   
+                    $('#'+goodcount).text(data[i].good); 
+                    $('#'+badcount).text(data[i].bad); 
+                    $('#'+count).text(parseInt(data[i].good) + parseInt(data[i].bad));
+                    $('#'+bar).removeClass();
+                    $('#'+bar).addClass(rankClass);
+                  }
+                }
+            }            
+
+            $('.addidea').click(function(){
+                var name = $('#nameidea').val();
+               
+                if(name == ''){
+                  $('#no-idea').addClass("alert");
+                  $('.alert').text('oops, you forgot to enter an idea.');
+                }else{   
+                  $('#no-idea').hide(); 
+                   $('#voting').fadeOut();
+                  var author = "<?php echo $_SESSION['username'] ?>";                            
+                  $.ajax({              
+                      type: "POST",               
+                      url: "process.php?action=",                
+                      data: { name: name, author: author, action: "addidea" },                
+                      success: function(data) {                                                         
+                        updateData(data);     
+                         $('#voting').fadeIn();                                                
+                      },
+                      error: function(a,b,c)
+                      {
+                        $('#no-idea').show(); 
+                        $('#no-idea').addClass("alert alert-error");
+                      }
+                    });
+
                 }
 
-            } 
 
-            $('#addidea').click(function(){
-              //$('#voting').fadeOut('slow'); 
-              var name = $('#nameidea').val();
-              var author = "<?php echo $_SESSION['username']; ?>";              
-              $.ajax({              
-                    type: "POST",               
-                    url: "process.php?action=",                
-                    data: { name: name, author:author, action: "add" },                      
-                    success: function(data) {                                                    
-                        //updateData(data);   
-                        alert(data);                      
-                     }
-                   });
             });
+           
 
-            $('.votebadbutton').click(function(){                  
+            $('.votebadbutton').click(function(){           
+                  $('#no-idea').hide();        
                   var badIdeaId = this.getAttribute('data-idea-bad');                 
                   $.ajax({              
                       type: "POST",               
@@ -65,11 +83,17 @@
                       data: { ideaBadId: badIdeaId, action: "votebad" },                
                       success: function(data) {                                                         
                         updateData(data);                                            
+                      },
+                      error: function(a,b,c)
+                      {
+                        $('#no-idea').show(); 
+                        $('#no-idea').addClass("alert alert-error");
                       }
                     });
               });
            
-            $(".votegoodbutton").click(function(){                                        
+            $(".votegoodbutton").click(function(){                   
+                $('#no-idea').hide();                      
                 var goodIdeaId = this.getAttribute('data-idea-good');                              
                 $.ajax({              
                     type: "POST",               
@@ -77,7 +101,12 @@
                     data: { ideaGoodId: goodIdeaId, action: "votegood" },                
                     success: function(data) {                                                                              
                       updateData(data);                
-                    }
+                    },
+                      error: function(a,b,c)
+                      {
+                        $('#no-idea').show(); 
+                        $('#no-idea').addClass("alert alert-error");
+                      }
                   });
               });                              
         })
@@ -116,13 +145,13 @@
                 <h3 class="pink">What is your next idea?</h3>              
                <form class="well" action="" method="POST">
                   <input type="text" class="span12" id="nameidea" placeholder="what is the idea name?">                 
-                  <button type="submit" id="addidea" class="btn btn-inverse">Send</button>
+                  <a  class="addidea btn btn-inverse">Send</a>
+                  <div id="no-idea"></div>
                 </form>
             </div>
             <div class="row-fluid">        
                 <h3 class="pink">Vote for the idea</h3>
-                <div id="voting" class="well">
-                   
+                <div id="voting" class="well">                   
                     <?php        
                     $query = mysql_query("SELECT sum(good) + sum(bad) as'sum' FROM ideas");
                     $total =mysql_fetch_array($query);                  
@@ -135,8 +164,8 @@
                         $rank =  round(($allvotes/$totalvotes)*10);
                       ?>             
                       <div class='well'>
-                        <div class="span1"><a class="votegoodbutton btn btn-inverse"  type="submit" data-idea-good="<?php echo $row['id']?>" ><i class="icon-thumbs-up icon-white"></i><span class="votecount" id="idea-good-id-<?php echo $row['id']?>"><?php echo $good ?></span></a></div> 
-                        <div class="span1"><a class="votebadbutton btn btn-inverse"   type="submit" data-idea-bad="<?php echo $row['id'] ?>" ><i class="icon-thumbs-down icon-white"></i><span class="votecount" id="idea-bad-id-<?php echo $row['id']?>"><?php echo $bad ?></span></a></div>       
+                        <div class="span1"><a class="votegoodbutton btn btn-inverse"  data-idea-good="<?php echo $row['id']?>" ><i class="icon-thumbs-up icon-white"></i><span class="votecount" id="idea-good-id-<?php echo $row['id']?>"><?php echo $good ?></span></a></div> 
+                        <div class="span1"><a class="votebadbutton btn btn-inverse"   data-idea-bad="<?php echo $row['id'] ?>" ><i class="icon-thumbs-down icon-white"></i><span class="votecount" id="idea-bad-id-<?php echo $row['id']?>"><?php echo $bad ?></span></a></div>       
                         <div class='ideainfo'><span class='span10 ideaname' id="idea-name-<?php echo $row['id']?>"><?php echo $row['name'] ?></span></div>
                         <div id="idea-count-<?php echo $row['id']?>" class='good vote v-<?php echo $rank ?>'><span class="votecount" id="idea-all-id-<?php echo $row['id']?>"><?php echo $allvotes ?></span></div>
                       </div>                     
