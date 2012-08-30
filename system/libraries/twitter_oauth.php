@@ -110,7 +110,18 @@ class twitter_oauth
         //Return the token and secret for storage
         return $oauth;
     }
-    
+
+    public function get_account_credentials($userId)
+    { 
+        $url = 'http://twitter.com/users/show/'.$userId.'.json';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $json = json_decode($response);
+        return $json;
+    } 
+
     /**
      * Connects to the server and sends the request,
      * then returns the response from the server.

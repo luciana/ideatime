@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class Ideas extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -45,31 +45,40 @@ class Welcome extends CI_Controller {
 			$this->request_token();
 	}
 
-	function work()
+	function home()
 	{
+		$params = array('key'=>'0sd51MbJuom5csE6xeYfw', 'secret'=>'suL2lwFTggjBMWRSev1uZDIutYy7vhhHo44DIOYs');
+	    $this->load->library('twitter_oauth', $params);
+	    $array = $this->user_model->getUserTwitterInfo($_SESSION['username']);
+	    $userId = $array->oauth_uid;
+		$response = $this->twitter_oauth->get_account_credentials($userId);
+	//	$data['twitter'] = $response;
+		//echo var_dump($response->profile_image_url_https);
+		$_SESSION['avatar'] = $response->profile_image_url_https;
+		$data['ideas'] = $this->idea_model->get_Ideas();
 		$data['session'] = $_SESSION;//$this->session->userdata('token_secret');
-		$this->load->view('link', $data);
+		$this->load->view('home_view', $data);
 
 	}
 
-	
-	function twit_response()
+	function submit()
 	{
-
-		redirect('welcome/work');
+		$array = array('name' => $this->input->post('idea'),'author' => $this->input->post('username'));
+		$this->idea_model->post_Idea($array);
+		redirect('ideas/home');
 	}
 
 	function logout()
 	{
 		session_destroy();
-		redirect('welcome/index');
+		redirect('ideas/index');
 	}
 
 	function request_token()
 	{
 	    $params = array('key'=>'0sd51MbJuom5csE6xeYfw', 'secret'=>'suL2lwFTggjBMWRSev1uZDIutYy7vhhHo44DIOYs');
 	    $this->load->library('twitter_oauth', $params);
-	    $response = $this->twitter_oauth->get_request_token(site_url("welcome/access_token"));
+	    $response = $this->twitter_oauth->get_request_token(site_url("ideas/access_token"));
 	    $_SESSION['token_secret'] = $response['token_secret'];
 	    redirect($response['redirect']);
 	}
@@ -81,25 +90,6 @@ class Welcome extends CI_Controller {
 	    $this->load->library('twitter_oauth', $params);
 	    $response = $this->twitter_oauth->get_access_token(false,  $_SESSION['token_secret']);
 	    $_SESSION['username'] = $response['screen_name'];
-	    redirect('welcome/work');
+	    redirect('ideas/home');
 	}
 }
-
-/*
-access token: response
-
-array(4) { ["oauth_token"]=> string(50) "434626592-R4bRlzXUN4gcr03yb3fD2w4PeKmuwOg6AfrvNit5" 
-["oauth_token_secret"]=> string(42) "L4j9GWakPnUIdGT8q0maSaw62LEiVqFrPpQXOqmL0g" 
-["user_id"]=> string(9) "434626592" ["screen_name"]=> string(12) "getSabotaged" }
-
-*/
-
-/*
-$params = array('key'=>'0sd51MbJuom5csE6xeYfw', 'secret'=>'suL2lwFTggjBMWRSev1uZDIutYy7vhhHo44DIOYs');
-$this->load->library('twitter_oauth', $params);
-
-$response = $this->twitter_oauth->get_request_token('http://localhost:8888/idea/index.php/welcome/work');
-
-*/
-/* End of file welcome.php */
-/* Location: ./application/controllers/welcome.php */
