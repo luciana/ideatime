@@ -40,7 +40,7 @@ class Ideas extends CI_Controller {
 	function login()
 	{
 		if ( !empty($_SESSION['token_secret']))
-			redirect('welcome/work');
+			redirect('ideas/home');
 		else
 			$this->request_token();
 	}
@@ -55,7 +55,7 @@ class Ideas extends CI_Controller {
 	//	$data['twitter'] = $response;
 		//echo var_dump($response->profile_image_url_https);
 		$_SESSION['avatar'] = $response->profile_image_url_https;
-		$data['ideas'] = $this->idea_model->get_Ideas();
+		$data['ideas'] = $this->idea_model->get_ideas();
 		$data['session'] = $_SESSION;//$this->session->userdata('token_secret');
 		$this->load->view('home_view', $data);
 
@@ -63,9 +63,16 @@ class Ideas extends CI_Controller {
 
 	function submit()
 	{
-		$array = array('name' => $this->input->post('idea'),'author' => $this->input->post('username'));
-		$this->idea_model->post_Idea($array);
-		redirect('ideas/home');
+		$array = array('name' => $this->input->post('idea'),'author' => $this->input->post('author'));
+		$this->idea_model->post_idea($array);
+		
+		if ($this->input->post('ajax'))
+		{
+			$data['idea'] = $this->idea_model->get_last_idea();
+			$this->load->view('ideas/new_idea_view', $data);
+		}
+		else
+			redirect('ideas/home');
 	}
 
 	function logout()
