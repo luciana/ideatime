@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://localhost:8888/idea/';
+$config['base_url']	= 'http://idea:8888/';
 //$config['base_url']	= 'http://mikeasabo.com/idea';
 /*
 |--------------------------------------------------------------------------
@@ -224,7 +224,7 @@ $config['cache_path'] = '';
 | MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = '3CuQ8BKV871981V1jgm1mv5Sqz1772Op';
+$config['encryption_key'] = '3CuQ8BKV871981V1jgm1mv5Sqz17721p';
 
 /*
 |--------------------------------------------------------------------------

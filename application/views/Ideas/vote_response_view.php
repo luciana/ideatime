@@ -1,0 +1,1 @@
+<?php echo $vote_count ?>

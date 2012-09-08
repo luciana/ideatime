@@ -1,24 +1,27 @@
 <?php
 
-class User_model extends CI_Model {
-
+Class User_model extends CI_Model
+{
 	function __construct()
 	{
 		parent::__construct();
 	}
 
-	function getUserTwitterInfo($username)
+	function get_user($id)
 	{
-		$query = $this->db->where('username', $username)
-							->limit('1')
-							->get('users');
-		return $query->row();
+		$query = $this->db
+						->where('id', $id)
+						->get('users');
+		return $query->result();				
 	}
 
-	function getAllUsers()
+	function get_valid_user($username)
 	{
-		$query = $this->db->get('users');
-		return $query->result();
+		$query = $this->db
+						->where('username', $username)
+						->limit(1)
+						->get('users');
+		return $query->row();	
 	}
 
 
