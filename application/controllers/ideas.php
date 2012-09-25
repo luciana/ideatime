@@ -12,12 +12,16 @@ class Ideas extends CI_Controller {
 			session_start();
 		parent::__construct();
 		$params = array('key'=>'0sd51MbJuom5csE6xeYfw', 'secret'=>'suL2lwFTggjBMWRSev1uZDIutYy7vhhHo44DIOYs');
-		$this->load->library('twitter_oauth', $params);
+		$this->load->library('twitter_oauth', $params);				
 	}	
 
 	function index()
 	{
-		$this->load->view('login_view');
+		if (isset($_SESSION['username'])){
+              redirect('ideas/home');
+         }else{
+              $this->load->view('login_view');
+         }
 	}
 
 	function login()
@@ -28,16 +32,32 @@ class Ideas extends CI_Controller {
 			redirect('twitter/request_token');
 	}
 
+	function meetup_login()
+	{		
+		if (isset($_SESSION['meetup_member_id'])) {
+        	$access_token = $_SESSION['meetup_member_id'];
+		} else {
+			redirect('meetup/request_token');
+		}
+	}
+
 	function home()
 	{
-	    $array = $this->oauth_model->get_UserTwitterInfo($_SESSION['username']);
-	    $userId = $array->users_id;
-	    $userArray = $this->user_model->get_user($userId);
-		$response = $this->twitter_oauth->get_account_credentials($userId);
-		$_SESSION['avatar'] = $response->profile_image_url_https;
-		$data['ideas'] = $this->idea_model->get_ideas_votes(); 
-		$this->load->view('home_view', $data);
-
+	    $userData = $this->oauth_model->get_user($_SESSION['user_id']);
+		$response = $this->twitter_oauth->get_account_credentials($userData->oauth_uid);
+		$_SESSION['name'] = $response->name;
+		$_SESSION['avatar'] = $response->profile_image_url;
+		$groups = $_SESSION['groups'][0];//first group - TODO		
+		if(!empty($groups)){
+			$data = array(
+	               'group' => $this->group_model->get_group($groups->groups_id),
+	               'ideas' => $this->idea_model->get_ideas_votes()
+	          );
+			$this->load->view('home_view', $data);
+		}else{
+			//user is not assigned to any group
+			redirect('groups/home');
+		}
 	}
 
 	function submit()

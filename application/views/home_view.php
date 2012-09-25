@@ -2,10 +2,13 @@
 	 <section class="container-fluid ">             
        
       <?php $this->load->view('forms/idea_form_view') ?>
+      <?php $this->load->view('forms/meetup_form_view') ?>
         
       <div class="row-fluid">        
             <h3 class="pink">Vote for the idea</h3>             
-           <?php $data['ideas'] = $ideas ?>  
+           <?php 
+           $data['ideas'] = $ideas ;
+           $data['group']= $group;?>  
          <div id="voting" class="well"> 
     			 <?php $this->load->view('ideas/idea_view', $data) ?>
           </div>

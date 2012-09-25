@@ -7,9 +7,17 @@ class Oauth_model extends CI_Model {
 		parent::__construct();
 	}
 
-	function get_UserTwitterInfo($username)
+	function get_user_twitter_info($username)
 	{
 		$query = $this->db->where('username', $username)
+							->limit('1')
+							->get('oauth_users');
+		return $query->row();
+	}
+
+	function get_user($id)
+	{
+		$query = $this->db->where('users_id', $id)
 							->limit('1')
 							->get('oauth_users');
 		return $query->row();
@@ -21,16 +29,28 @@ class Oauth_model extends CI_Model {
 		return $query->result();
 	}
 
-	function update_UserTwitter($data, $id)
+	function get_user_groups($id)
+	{
+		$query = $this->db->where('users_id', $id)
+						  ->get('group_access');
+		return $query->result();
+	}
+
+	function update_user_twitter($data, $id)
 	{
 		$this->db->where('users_id', $id);		
 		$this->db->update('oauth_users', $data);
 
 	}
 
-	function insert_UserTwitter($data)
+	function insert_user_twitter($data)
 	{		
 		$this->db->insert('oauth_users', $data);
+
+	}
+	function insert_user($data)
+	{		
+		$this->db->insert('users', $data);
 
 	}
 

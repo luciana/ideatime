@@ -6,6 +6,8 @@ Class Test extends CI_Controller
 		if (!isset($_SESSION))
 			session_start();
 		parent::__construct();
+		$params = array('key'=>'0sd51MbJuom5csE6xeYfw', 'secret'=>'suL2lwFTggjBMWRSev1uZDIutYy7vhhHo44DIOYs');
+		$this->load->library('twitter_oauth', $params);
 	}
 
 	function index()
@@ -25,9 +27,11 @@ Class Test extends CI_Controller
 
 	}
 
-	function votes()
+	function twitter()
 	{
-		var_dump($this->vote_model->is_duplicate_vote(7, 2));
+		  $userArray = $this->user_model->get_user('2');
+		$response = $this->twitter_oauth->get_account_credentials(39792346);
+		var_dump($response);
 
 		
 	}
