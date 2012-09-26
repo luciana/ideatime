@@ -47,16 +47,32 @@ class Ideas extends CI_Controller {
 		$response = $this->twitter_oauth->get_account_credentials($userData->oauth_uid);
 		$_SESSION['name'] = $response->name;
 		$_SESSION['avatar'] = $response->profile_image_url;
-		$groups = $_SESSION['groups'][0];//first group - TODO		
+		
+		$groups = $this->group_model->get_user_groups($_SESSION['user_id']);
+		
 		if(!empty($groups)){
 			$data = array(
-	               'group' => $this->group_model->get_group($groups->groups_id),
+	               'groups' => $groups,
 	               'ideas' => $this->idea_model->get_ideas_votes()
 	          );
 			$this->load->view('home_view', $data);
 		}else{
 			//user is not assigned to any group
 			redirect('groups/home');
+		}
+	}
+ 
+	function show(){
+
+		
+		if ($this->input->post('ajax'))
+		{
+			$data['ideas'] = $this->idea_model->get_last_idea();
+			$data['group'] = 'Founders'; //TODO 
+			$this->load->view('ideas/single_idea_view', $data);
+		}
+		else{
+		//	redirect('ideas/home');
 		}
 	}
 

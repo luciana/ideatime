@@ -1,21 +1,56 @@
  <?php $this->load->view('common/header') ?>
 	 <section class="container-fluid ">             
        
-      <?php $this->load->view('forms/idea_form_view') ?>
-      <?php $this->load->view('forms/meetup_form_view') ?>
-        
-      <div class="row-fluid">        
-            <h3 class="pink">Vote for the idea</h3>             
-           <?php 
-           $data['ideas'] = $ideas ;
-           $data['group']= $group;?>  
-         <div id="voting" class="well"> 
-    			 <?php $this->load->view('ideas/idea_view', $data) ?>
-          </div>
-        </div>      
+      
+      <?php      
+        $group_count = count($groups);        
+        if ($group_count % 3 == 0) $class ="span4";
+        if ($group_count % 2 == 0) $class ="span6";
+
+        //User is in multiple groups..
+        if($group_count>1){?>
+          <div class="row-fluid">  <?php
+          foreach ($groups as $group)
+          {
+             ?>
+             <div class="well <?php echo $class ?>">
+              <h3 class="pink"><a href="#" class="group" id="group-<?php echo $group->id ?>"><?php echo $group->name; ?> Group</a></h3>
+             </div>
+             <?php
+          } ?>
+          <div id="idea-content">
+          </div><?php
+        }else {
+          $data['group']= $groups[0];
+          $data['ideas']= $ideas;
+          $this->load->view('ideas/single_idea_view', $data);        
+        }
+        ?>
+                
     </section>
 
 <script type="text/javascript">
+
+$('.group').click(function(){
+
+  var form_data = {   
+    user_id: "<?php echo $_SESSION['user_id'] ?>",
+    group: '1', 
+    ajax: '1'   
+  };
+
+  $.ajax({
+      url: "<?php echo site_url('ideas/show'); ?>",
+      type: 'POST',     
+      data: form_data,
+      success: function(data) {
+        alert(data);
+        $(".group").hide();
+        $("#idea-content").fadeIn(data);
+      }
+    });
+
+});
 $('#sendIdea').click(function() {
   
   var idea = $('#ideaName').val();
@@ -28,7 +63,7 @@ $('#sendIdea').click(function() {
   var form_data = {
     idea: idea,
     author: "<?php echo $_SESSION['username'] ?>",
-    group: "<?php echo $_SESSION['group'] ?>", 
+    group: "<?php echo $_SESSION['groups'] ?>", 
     ajax: '1'   
   };
   

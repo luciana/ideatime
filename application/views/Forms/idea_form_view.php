@@ -1,5 +1,5 @@
  <div class="row-fluid">     
-    <h2><?php echo $group['name'] ?></h2>                       
+    <h2><?php echo $group->name; ?></h2>                       
       <?php       
           $attributes = array('class' => 'well', 'id' => 'newIdea');
           $hidden = array('username' => $_SESSION['username']);

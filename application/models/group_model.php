@@ -17,7 +17,25 @@ class Group_model extends CI_Model {
 		return $query->row_array();
 	}
 
-	function post_group($data)
+	function get_user_groups($id)
+	{	
+		$this->db->select('*');
+		$this->db->from('groups');
+		$this->db->join('group_access', 'groups.id = group_access.groups_id and group_access.users_id='.$id);		
+
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function is_user_in_group($id)
+	{
+		$query = $this->db->where('users_id', $id)
+							->limit(1)
+							->get('group_access');
+		return $query->row_array();
+	}
+
+	function insert_group($data)
 	{
 		$this->db->insert('groups', $data);
 		return $this->db->insert_id();

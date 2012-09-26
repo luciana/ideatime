@@ -18,12 +18,12 @@ class Groups extends CI_Controller {
      * @return null
      */
 	function home()
-	{		
+	{						
 		$data = array(
-			'user'=> 'mydomainlist',			
-			'groups' => $this->group_model->get_groups()
-			);
-		$this->load->view('new_user_view',$data);
+		'user'=> $_SESSION['username'],			
+		'groups' => $this->group_model->get_groups()
+		);
+		$this->load->view('new_user_view',$data);			
 	}
 
 	/**
@@ -38,15 +38,16 @@ class Groups extends CI_Controller {
 		$array = array(
 					'name' => $this->input->post('group')					
 				);
-		$group_id = $this->group_model->post_group($array);
+		$group_id = $this->group_model->insert_group($array);
 
 		$array = array(
 					'username' => $_SESSION['username'],
 					'users_id' => $_SESSION['user_id'],
-					'groups_id' => $group_id						
+					'groups_id' => $group_id,
+					'admin' => 1					
 				);
 		$this->group_model->post_group_access($array);
-			
+		$_SESSION['groups'] = array($group_id);
 		redirect('ideas/home');
 	}
 }

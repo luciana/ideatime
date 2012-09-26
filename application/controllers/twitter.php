@@ -84,64 +84,49 @@ Class Twitter extends CI_Controller
 		//get access token
 	    $response = $this->twitter_oauth->get_access_token(false,  $_SESSION['token_secret']);
 	    $_SESSION['oauth_token'] = $response["oauth_token"];
-	    /*Array ( [oauth_token] => 320236200-efD0A9naQ4vj3pGIrPRda0UOht2ed0RLpH87waAC [oauth_token_secret] => gSRRtMulGDH9iGxaZX8eHFwjmCjZHEpeQnDYFaQKc [user_id] => 320236200 [screen_name] => MyDomainList )*/
+	    		    
+	   	//Check if user already exists
+	   	$user = $this->user_model->get_valid_user($response['screen_name']);
 
-	    //make sure user is allowed to visit our sweet site
-	    $user = $this->user_model->get_valid_user($response['screen_name']);
-	    //see if they have already logged in before
-	    $oauthUser = $this->oauth_model->get_user_twitter_info($response['screen_name']);
-	    //if both are not empty, then they have been here before so update table
-	    if (!empty($user) && !empty($oauthUser))
-	    {
-		    $twitterData = array(
-		    		'oauth_provider' => 'twitter',
-		    		'oauth_uid' => $response['user_id'],
-		    		'oauth_token' => $response['oauth_token'],
-		    		'oauth_secret' => $response['oauth_token_secret'],
-		    		'username' => $response['screen_name']
-		    		);
-		    $this->oauth_model->update_user_twitter($twitterData, $user->id);
-		    $group = $this->oauth_model->get_user_groups($user->id);
-		    if(empty($group)) $group = array('0');
-    	    $this->ideaslib->create_session($user->id, $response['screen_name'], $group);
-    	    redirect('ideas/home');
-		}
-		//user is new addition so lets add them to the oauth table
-		elseif (!empty($user)) {
-			$twitterData = array(
-		    		'oauth_provider' => 'twitter',
-		    		'oauth_uid' => $response['user_id'],
-		    		'oauth_token' => $response['oauth_token'],
-		    		'oauth_secret' => $response['oauth_token_secret'],
-		    		'username' => $response['screen_name'],
-		    		'users_id' => $user->id
-		    		);
-		    $this->oauth_model->insert_user_twitter($twitterData);
-		    $group = $this->oauth_model->get_user_groups($user->id);
-		    if(empty($group)) $group = array('0');
-		    $this->ideaslib->create_session($user->id, $response['screen_name'], $group);
-		    redirect('ideas/home');
-		}
-		//user is brand new - create an user entry and an oauth entry
-		else{
+	   	//User is new...
+	   	if (empty($user)){
+		    //Insert info into User table
 			$userData = array(
-		    		'username' => $response['screen_name']
-		    		);
-			$this->oauth_model->insert_user($userData);
-			$user = $this->user_model->get_valid_user($response['screen_name']);			
+			    		'username' => $response['screen_name']
+			    		);
+			$userId = $this->oauth_model->insert_user($userData);
+
+			//Insert info into Twitter table
 			$twitterData = array(
-		    		'oauth_provider' => 'twitter',
-		    		'oauth_uid' => $response['user_id'],
-		    		'oauth_token' => $response['oauth_token'],
-		    		'oauth_secret' => $response['oauth_token_secret'],
-		    		'username' => $response['screen_name'],
-		    		'users_id' => $user->id
-		    		);
-		    $this->oauth_model->insert_user_twitter($twitterData);
-		    $group = array('0');
-		    $this->ideaslib->create_session($user->id, $response['screen_name'], $group);
-			redirect('groups/home');
+			    		'oauth_provider' => 'twitter',
+			    		'oauth_uid' => $response['user_id'],
+			    		'oauth_token' => $response['oauth_token'],
+			    		'oauth_secret' => $response['oauth_token_secret'],
+			    		'username' => $response['screen_name'],
+			    		'users_id' => $userId
+			    		);
+			$this->oauth_model->insert_user_twitter($twitterData);
+
+			$user = $this->user_model->get_valid_user($response['screen_name']);
+
 		}
+		
+		//Is user assigned to any groups?
+		$groups = $this->oauth_model->get_user_groups($user->id);
+				
+    	//User is not associated with any groups - redirect to group home
+		if(empty($groups)) {			
+			//Save Session Data
+    		$this->ideaslib->create_session($user->id, $response['screen_name'], array('0'));    	
+    		redirect('groups/home');
+    	}
+
+    	//Save Session Data
+    	$this->ideaslib->create_session($user->id, $response['screen_name'], $groups);
+    	
+
+    	//User is associated with groups - redirect to idea home
+    	redirect('ideas/home');	    
 	    
 	}
 }
