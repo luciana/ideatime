@@ -8,11 +8,31 @@
            <?php $data['ideas'] = $ideas ?>  
          <div id="voting" class="well"> 
     			 <?php $this->load->view('ideas/idea_view', $data) ?>
+           <button style="margin: 0 auto;" class="addidea btn btn-inverse" id="moreIdeas">More Please</button>
           </div>
         </div>      
     </section>
 
 <script type="text/javascript">
+/*var page =1;
+$('#moreIdeas').live(function() {
+  page++;
+
+    $.ajax({
+    url: "<?php echo site_url('ideas/home'); ?>",
+    type: 'POST',
+    data: form_data,
+    success: function(msg) {
+      $('#voting').append(msg);
+      $('#ideaName').val('');
+    }
+  });
+  
+  return false;
+
+
+});
+*/
 $('#sendIdea').click(function() {
   
   var idea = $('#ideaName').val();

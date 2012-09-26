@@ -27,7 +27,11 @@ Class Test extends CI_Controller
 
 	function votes()
 	{
-		var_dump($this->vote_model->is_duplicate_vote(7, 2));
+		$response = $this->idea_model->get_ideas_page(1);
+		echo $response->num_rows();
+
+		echo ' ';
+		var_dump($response->result_array());
 
 		
 	}

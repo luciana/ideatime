@@ -17,7 +17,10 @@ class Ideas extends CI_Controller {
 
 	function index()
 	{
-		$this->load->view('login_view');
+		if (isset($_SESSION['username']))
+			redirect('ideas/home');
+		else	
+			$this->load->view('login_view');
 	}
 
 	function login()
@@ -35,7 +38,7 @@ class Ideas extends CI_Controller {
 	    $userArray = $this->user_model->get_user($userId);
 		$response = $this->twitter_oauth->get_account_credentials($userId);
 		$_SESSION['avatar'] = $response->profile_image_url_https;
-		$data['ideas'] = $this->idea_model->get_ideas_votes(); 
+		$data['ideas'] = $this->idea_model->get_ideas_page(); 
 		$this->load->view('home_view', $data);
 
 	}

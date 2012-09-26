@@ -2,6 +2,8 @@
 
 Class Idea_model extends CI_Model {
 	
+	var $max_rows = 10;
+
 	function get_ideas()
 	{
 		$query = $this->db
@@ -24,6 +26,19 @@ Class Idea_model extends CI_Model {
 	function post_idea($postArray)
 	{
 		$this->db->insert('ideas', $postArray);
+	}
+
+	function get_ideas_page($page = 1)
+	{
+		$start_result = ($page - 1) * $this->max_rows; 
+		$query = $this->db
+						->group_by('ideas.id')
+						->select('ideas.*, SUM(votes.good) as vGood, SUM(votes.bad) as vBad')
+						->from('ideas')
+						->limit($this->max_rows, $start_result)
+						->join('votes', 'ideas.id = votes.ideas_id', 'left')
+						->get();
+		return $query->result();
 	}
 
 	function get_last_idea()
