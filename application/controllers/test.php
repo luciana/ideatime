@@ -6,6 +6,8 @@ Class Test extends CI_Controller
 		if (!isset($_SESSION))
 			session_start();
 		parent::__construct();
+		$params = array('key'=>'0sd51MbJuom5csE6xeYfw', 'secret'=>'suL2lwFTggjBMWRSev1uZDIutYy7vhhHo44DIOYs');
+		$this->load->library('twitter_oauth', $params);
 	}
 
 	function index()
@@ -25,13 +27,11 @@ Class Test extends CI_Controller
 
 	}
 
-	function votes()
+	function twitter()
 	{
-		$response = $this->idea_model->get_ideas_page(1);
-		echo $response->num_rows();
-
-		echo ' ';
-		var_dump($response->result_array());
+		  $userArray = $this->user_model->get_user('2');
+		$response = $this->twitter_oauth->get_account_credentials(39792346);
+		var_dump($response);
 
 		
 	}

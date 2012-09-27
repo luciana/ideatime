@@ -32,7 +32,7 @@ class twitter_oauth
         $this->_consumer = $params;
     }
     
-    /**
+    /** 
      * This is called to begin the oauth token exchange. This should only
      * need to be called once for a user, provided they allow oauth access.
      * It will return a URL that your site should redirect to, allowing the

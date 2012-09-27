@@ -14,26 +14,31 @@
         <link href='/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Signika' rel='stylesheet' type='text/css'>
         <link href='/css/bootstrap-responsive.min.css' rel='stylesheet' type='text/css'> 
-        <link href='/css/style.css' rel='stylesheet' type='text/css'>        
+        <link href='/css/style.css' rel='stylesheet' type='text/css'>           
 </head>
 <body>
 
- <header class="container-fluid">       
-            <h2><a class="brand" href='index.php'>IdeaTime</a><span class="small gray">.us</span></h2>            
+ <header class="container-fluid">      
+    <div class="row-fluid"> 
+      <div class="span8">
+        <h2 ><a class="brand" href="<?php echo  site_url('ideas/index') ?>">IdeaTime</a><span class="small gray">.us</span></h2>        
+      </div>
+        <?php if(!empty($_SESSION['name'])): ?>
+        <div class="span4">
+           <a href=<?php echo '"' . site_url('ideas/logout') . '" class="uppercase">'?> Sign-out</a>            
+        </div>  
+        <? endif; ?>
+    </div>       
  </header>
 
   <section class="container-fluid">
        <p class="tagline center no-loggedin uppercase">
-      <?php if(!empty($_SESSION['username'])): ?>
+      <?php if(!empty($_SESSION['name'])): ?>
       <?php  echo '<img src="'.$_SESSION['avatar'].'">' ?>
-       <?php echo $_SESSION['username'].'</img>' ?> 
+       <?php echo $_SESSION['name'].'</img>' ?> 
      <?php else: ?>
-       <?php   echo 'Have an idea to share?'; ?>
+       <?php   echo 'Have an idea to share ?'; ?>
        <? endif; ?>
 
        </p>
-        <p class="tagline center">
-           <?php if(empty($_SESSION['username'])){  ?>
-                        <a href=<?php echo '"' . site_url('ideas/login') . '" class="uppercase">'?> Sign in with your twitter account</a>
-            <?php } ?></p>   
-</section>
+     </section>

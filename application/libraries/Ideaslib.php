@@ -3,11 +3,11 @@
 class Ideaslib
 {
 
-	function create_session($userId, $name, $group)
+	function create_session($userId, $name, $groups)
 	{
 		$_SESSION['user_id'] = $userId;
 	    $_SESSION['username'] = $name;
-	    $_SESSION['group'] = '1';
+	    $_SESSION['groups'] = $groups;
 	}
 
 }

@@ -15,7 +15,6 @@
 |
 */
 $config['base_url']	= 'http://idea:8888/';
-//$config['base_url']	= 'http://mikeasabo.com/idea';
 /*
 |--------------------------------------------------------------------------
 | Index File
