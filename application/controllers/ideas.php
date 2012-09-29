@@ -47,37 +47,49 @@ class Ideas extends CI_Controller {
 		$response = $this->twitter_oauth->get_account_credentials($userData->oauth_uid);
 		$_SESSION['name'] = $response->name;
 		$_SESSION['avatar'] = $response->profile_image_url;
-
+		$_SESSION['active_group_id'] = 0;
 		$groups = $this->group_model->get_user_groups($_SESSION['user_id']);
-		if(!empty($_SESSION['active_group_id'])){
-			$group_id = $_SESSION['active_group_id'];
-			$data = array(
-	               'ideas' => $this->idea_model->get_idea_by_group($group_id),
-	               'groups' =>$this->group_model->get_group($group_id)
-	          );	
-			$this->load->view('ideas/single_idea_view', $data);
-		}else
+		
 		if(empty($groups)){
 			$data['groups'] = null;  
            	$this->load->view('groups/home_view', $data);
 		}else
-		if(count($groups)>1){
-			 $data['groups'] = $groups;             
+		if(count($groups)>0){
+			$data['groups'] = $groups;             
             $this->load->view('groups/home_view', $data);
-		}else{
-			$group_id = $groups[0]->id;
-			$_SESSION['active_group_id'] = $group_id;
-			$data = array(
-	               'ideas' => $this->idea_model->get_idea_by_group($group_id),
-	               'groups' =>$this->group_model->get_group($group_id)
-	          );	
-			$this->load->view('ideas/single_idea_view', $data);
-		}		
+
+		}
 	}
 
+	function next_page()
+	{
+		$page = $this->input->post('pageNum');
+
+		if ($page > $this->idea_model->get_total_pages())
+			$page = 1;
+
+		$group = $_SESSION['groups'][0];
+
+		$data = array(
+	               'group' => $this->group_model->get_group($group->groups_id),
+	               'ideas' => $this->idea_model->get_ideas_page($page)
+	          );
+		$this->load->view('ideas/idea_view', $data);
+	}
+
+
 	function single($group_id){
-		$_SESSION['active_group_id'] = $group_id;
-		redirect('ideas/home');
+
+		if($this->group_model->is_user_in_group($group_id, $_SESSION['user_id'])){
+			$_SESSION['active_group_id'] = $group_id;
+			$data = array(
+		               'ideas' => $this->idea_model->get_idea_by_group($group_id),
+		               'groups' =>$this->group_model->get_group($group_id)
+		          );	
+			$this->load->view('ideas/single_idea_view', $data);
+		}else{
+			show_404();
+		}
 	}
 
 	function submit($id = null)
