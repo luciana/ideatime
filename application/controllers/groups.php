@@ -26,6 +26,20 @@ class Groups extends CI_Controller {
 		$this->load->view('groups/home_view',$data);			
 	}
 
+	function request_access(){
+		$data = array(
+			   'requester' => $this->input->post('twitter_name') ,
+			   'groups_id' => $this->input->post('groups') ,
+			  
+			);
+		$this->group_model->post_group_access_request($data);
+		redirect('ideas/home');
+	}
+
+	function grant_access(){
+
+	}
+
 	/**
      * Create new group
      * Add group name to the group table

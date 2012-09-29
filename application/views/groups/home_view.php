@@ -5,8 +5,9 @@
     <div class="row-fluid">
       <?php
       //User is in multiple groups..
-      $group_count = count($groups);  
-        if($group_count>1){
+      $group_count = count($groups);        
+        if($group_count>0){
+          $class="span12";
           if ($group_count % 3 == 0) $class ="span4";
           if ($group_count % 2 == 0) $class ="span6";
           $data['groups'] = $groups;

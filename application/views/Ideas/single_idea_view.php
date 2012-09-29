@@ -26,6 +26,40 @@
 
 <script type="text/javascript">
 var page = 1;
+$(".alert").hide();
+
+ $('#sendIdea').click(function() {
+  
+  var idea = $('#ideaName').val();
+  
+  
+  if (!idea || idea == 'what is the idea name?') {
+    alert('Please enter your idea');
+    return false;
+  }
+  
+  var form_data = {
+    idea: idea,
+    author: "<?php echo $_SESSION['username'] ?>",
+    group: "<?php echo $_SESSION['active_group_id'] ?>", 
+    ajax: "1"   
+  };
+  
+  $.ajax({
+    url: "<?php echo site_url('ideas/submit'); ?>",
+    type: 'POST',
+    data: form_data,
+    success: function(msg) {
+      $('#voting').append(msg);
+      $('#ideaName').val('what is the idea name?');
+      $(".alert").hide();
+    }
+  });
+  
+  return false;
+});
+
+
 $('#moreIdeas').click(function() {
     
     page++;
@@ -49,41 +83,13 @@ $('#moreIdeas').click(function() {
 
 });
 
-$('#sendIdea').click(function() {
-  
-  var idea = $('#ideaName').val();
-  
-  if (!idea || idea == 'what is the idea name?') {
-    alert('Please enter your idea');
-    return false;
-  }
-  
-  var form_data = {
-    idea: idea,
-    author: "<?php echo $_SESSION['username'] ?>",
-    group: "<?php echo $_SESSION['groups'] ?>", 
-    ajax: '1'   
-  };
-  
-  $.ajax({
-    url: "<?php echo site_url('ideas/submit'); ?>",
-    type: 'POST',
-    data: form_data,
-    success: function(msg) {
-      $('#voting').append(msg);
-      $('#ideaName').val('');
-    }
-  });
-  
-  return false;
-});
 
 $('.votegoodbutton').live("click", function() {
   
   var id = $(this).attr("id");
   var temp = id.indexOf('-');
   var ideaId = id.substring(temp+1);
-  
+  $(".alert").hide();
   if (!ideaId || ideaId < 0) {
     return false;
   }
@@ -94,14 +100,17 @@ $('.votegoodbutton').live("click", function() {
     ajax: '1'   
   };
   var spanId = '#idea-good-id-' + ideaId;
-  $.ajax({
+  var errorId = '#idea-error-'+ ideaId;
+  
+    $.ajax({
     url: "<?php echo site_url('ideas/post_vote'); ?>",
     type: 'POST',
     data: form_data,
     success: function(msg) {
-      if (isNaN(msg))
-        alert(msg);
-      else
+      if (isNaN(msg)){
+        $(errorId).show();
+        $(errorId).text("Basta! you already voted for this idea");
+      }else
       {
         $(spanId).html(msg);
         getTotal(ideaId);
@@ -117,7 +126,7 @@ $('.votebadbutton').live("click", function() {
   var id = $(this).attr("id");
   var temp = id.indexOf('-');
   var ideaId = id.substring(temp+1);
-  
+  $(".alert").hide();
   if (!ideaId || ideaId < 0) {
     return false;
   }
@@ -127,15 +136,18 @@ $('.votebadbutton').live("click", function() {
     id: ideaId,
     ajax: '1'   
   };
-  var spanId = '#idea-bad-id-' + ideaId;
+  var spanId = '#ideasea-bad-id-' + ideaId;
+  var errorId = '#idea-error-'+ ideaId;
+ 
   $.ajax({
     url: "<?php echo site_url('ideas/post_vote'); ?>",
     type: 'POST',
     data: form_data,
     success: function(msg) {
-      if (isNaN(msg))
-        alert(msg);
-      else
+      if (isNaN(msg)){
+         $(errorId).show();
+         $(errorId).text("Basta! you already voted for this idea");
+      }else
       {
         $(spanId).html(msg);
         getTotal(ideaId);
@@ -154,6 +166,7 @@ function getTotal(ideaId)
   var total = $(spanGood).text() - $(spanBad).text();
   $(spanTotal).text(total);
 }
+
 </script>
 <?php $this->load->view('common/footer') ?>
 

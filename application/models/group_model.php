@@ -27,12 +27,41 @@ class Group_model extends CI_Model {
 		return $query->result();
 	}
 
-	function is_user_in_group($id)
+	function get_group_requests($group_id){
+		$query = $this->db->where('groups_id', $group_id)							
+						   ->get('group_access_request');
+		return $query->result();
+	}
+
+	function is_user_in_group($group_id, $user_id)
+	{
+		$this->db->where('groups_id', $group_id);							
+		$this->db->where('users_id', $user_id);	
+		$this->db->from('group_access');
+		return $this->db->count_all_results();
+	}
+
+	function is_user_group_admin($group_id, $user_id)
+	{
+		$this->db->where('groups_id', $group_id);							
+		$this->db->where('users_id', $user_id);	
+		$this->db->where('admin', '1');	
+		$this->db->from('group_access');
+		return $this->db->count_all_results();
+	}
+
+	function is_user_in_any_groups($id)
 	{
 		$query = $this->db->where('users_id', $id)
 							->limit(1)
 							->get('group_access');
 		return $query->row_array();
+	}
+
+	function post_group_access_request($data)
+	{
+		$this->db->insert('group_access_request', $data);
+		return $this->db->insert_id();
 	}
 
 	function insert_group($data)

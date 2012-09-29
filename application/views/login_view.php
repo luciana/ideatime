@@ -10,5 +10,4 @@
         </div>                 
         <?php } ?>   
 </section>
-   
 <?php $this->load->view('common/footer') ?>

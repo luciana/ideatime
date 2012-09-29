@@ -47,7 +47,7 @@ class Ideas extends CI_Controller {
 		$response = $this->twitter_oauth->get_account_credentials($userData->oauth_uid);
 		$_SESSION['name'] = $response->name;
 		$_SESSION['avatar'] = $response->profile_image_url;
-		$_SESSION['active_group_id'] = 0;
+		$_SESSION['active_group_id'] = null;
 		$groups = $this->group_model->get_user_groups($_SESSION['user_id']);
 		
 		if(empty($groups)){
@@ -92,12 +92,12 @@ class Ideas extends CI_Controller {
 		}
 	}
 
-	function submit($id = null)
+	function submit()
 	{
 		$array = array(
 					'name' => $this->input->post('idea'),
 					'author' => $this->input->post('author'),
-					'groups_id' => $id,
+					'groups_id' => $this->input->post('group'),
 					'users_id' => $_SESSION['user_id']
 				);
 		$this->idea_model->post_idea($array);

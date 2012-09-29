@@ -125,6 +125,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', end
             transition: all 250ms ease 0s;  
           }
 
+          .black{
+
+            color: black;
+          }
           .center {
             text-align: center;
           }

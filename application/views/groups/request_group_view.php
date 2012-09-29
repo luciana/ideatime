@@ -1,6 +1,6 @@
-<?php $attributes = array('class' => 'well', 'id' => 'newUser') ?>
+<?php $attributes = array('class' => 'well', 'id' => 'requestAccess') ?>
 
-          <?php echo form_open('/twitter/post_status', $attributes); ?>
+          <?php echo form_open('/groups/request_access', $attributes); ?>
            <h3 class="pink">Request Access to an existing group</h3>     
            <?php
           $data = array(
