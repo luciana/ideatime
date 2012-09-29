@@ -14,7 +14,7 @@ class Group_model extends CI_Model {
 		$query = $this->db->where('id', $id)
 							->limit(1)
 							->get('groups');
-		return $query->row_array();
+		return $query->result();
 	}
 
 	function get_user_groups($id)

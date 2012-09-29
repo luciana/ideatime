@@ -23,7 +23,7 @@ class Groups extends CI_Controller {
 		'user'=> $_SESSION['username'],			
 		'groups' => $this->group_model->get_groups()
 		);
-		$this->load->view('new_user_view',$data);			
+		$this->load->view('groups/home_view',$data);			
 	}
 
 	/**

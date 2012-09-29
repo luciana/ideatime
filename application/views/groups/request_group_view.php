@@ -7,10 +7,11 @@
             'name'        => 'twitter_name',            
             'class'   => 'span6',
             'placeholder'       => 'enter your twitter userid',
-            'value'=> $user
+            'value'=> $_SESSION['username']
           );
           echo form_input($data); 
           $options = array();
+          $groups = $this->group_model->get_groups();
           foreach($groups as $row){
             if(!empty($row->name)){                     
                 $options[$row->id] = $row->name;

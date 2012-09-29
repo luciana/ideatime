@@ -117,15 +117,12 @@ Class Twitter extends CI_Controller
     	//User is not associated with any groups - redirect to group home
 		if(empty($groups)) {			
 			//Save Session Data
-    		$this->ideaslib->create_session($user->id, $response['screen_name'], array('0'));    	
-    		redirect('groups/home');
+    		$this->ideaslib->create_session($user->id, $response['screen_name'], array('0'),0);    	    		
+    	}else{
+    		//Save Session Data
+    		$this->ideaslib->create_session($user->id, $response['screen_name'], $groups,0);
     	}
 
-    	//Save Session Data
-    	$this->ideaslib->create_session($user->id, $response['screen_name'], $groups);
-    	
-
-    	//User is associated with groups - redirect to idea home
     	redirect('ideas/home');	    
 	    
 	}
