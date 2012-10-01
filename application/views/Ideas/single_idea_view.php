@@ -2,26 +2,21 @@
 <div class="container-fluid">  <?php
   //User is only in one group - show idea page           
   $this->load->view('forms/idea_form_view', $groups);  
-
-  if($this->group_model->is_user_group_admin($_SESSION['active_group_id'],$_SESSION['user_id'])){
-      $data['group_id'] = $_SESSION['active_group_id'];
-     $this->load->view('forms/admin_view', $data);
-  }
-
-  if(count($ideas)>0){          
+         
   ?>        
     <div class="row-fluid">        
       <h3 class="pink">Vote for the idea</h3>                       
       <div id="voting" class="well"> 
        <?php 
-       $data['ideas'] = $ideas ;             
-       $this->load->view('ideas/idea_view', $data)?>
+       if(count($ideas)>0){ 
+          $data['ideas'] = $ideas ;             
+          $this->load->view('ideas/idea_view', $data);
+        }?> 
        </div>
         <div style="height:auto;width:70px;margin:-20px auto 0;padding-bottom:20pt;" id="moreIdeas"> 
          <button style="align:center; width:80px;" class="addidea btn btn-inverse" id="moreIdeas">Next</button>
      </div>
     </div>
- <?php } ?>
 </div> 
 
 <script type="text/javascript">

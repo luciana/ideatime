@@ -41,15 +41,6 @@ class Group_model extends CI_Model {
 		return $this->db->count_all_results();
 	}
 
-	function is_user_group_admin($group_id, $user_id)
-	{
-		$this->db->where('groups_id', $group_id);							
-		$this->db->where('users_id', $user_id);	
-		$this->db->where('admin', '1');	
-		$this->db->from('group_access');
-		return $this->db->count_all_results();
-	}
-
 	function is_user_in_any_groups($id)
 	{
 		$query = $this->db->where('users_id', $id)
@@ -86,6 +77,12 @@ class Group_model extends CI_Model {
 		$this->db->where('id', $ideaId);		
 		$this->db->update('ideas', $data);
 		return 'success';
+	}
+
+	function delete_user_group_acccess_request($groups_id, $requester){
+		$this->db->where('groups_id', $groups_id);
+		$this->db->where('requester', $requester);
+		$this->db->delete('group_access_request'); 
 	}
 
 }

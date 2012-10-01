@@ -28,7 +28,7 @@ class Ideas extends CI_Controller {
 	{
 		if ( !empty($_SESSION['username']))
 			redirect('ideas/home');
-		else
+		else			
 			redirect('twitter/request_token');
 	}
 
@@ -54,11 +54,13 @@ class Ideas extends CI_Controller {
 			$data['groups'] = null;  
            	$this->load->view('groups/home_view', $data);
 		}else
-		if(count($groups)>0){
+		if(count($groups)>1){
 			$data['groups'] = $groups;             
             $this->load->view('groups/home_view', $data);
-
-		}
+		}else 
+		if (count($groups)==1){			
+			redirect('ideas/single/'.$groups[0]->groups_id);
+		} 
 	}
 
 	function next_page()

@@ -8,7 +8,7 @@ class Ideaslib
 		$_SESSION['user_id'] = $userId;
 	    $_SESSION['username'] = $name;
 	    $_SESSION['groups'] = $groups;
-	    $_SESSION['active_group_id'] = $active_group_id;
+	    $_SESSION['active_group_id'] = $active_group_id;	    
 	}
 
 }

@@ -19,72 +19,28 @@ Class Twitter extends CI_Controller
 	{
 	    $response = $this->twitter_oauth->get_request_token(site_url("twitter/access_token"));
 	    $_SESSION['token_secret'] = $response['token_secret'];
+	    
 	    redirect($response['redirect']);
 	}
 
-    function post_status(){
-    	$url = self::TWITTER_API.self::TWITTER_POST_STATUS;
+    function post_user_status(){
+    	//$url = self::TWITTER_API.self::TWITTER_POST_STATUS;
     	//$twitter_name, $groups
-    	$content = $this->_post($url);
-    	print_r($content);
+    	//$content = $this->_post($url);
+    	$content = $this->twitter_oauth->post_status();    	
+    	var_dump($content);
     }
 
-	function build_auth_header($oauth)
-	{
-	    $r = 'Authorization: OAuth '; 
-	    $values = array(); 
-	    foreach($oauth as $key=>$value)
-	        $values[] = "$key=\"" . rawurlencode($value) . "\""; 
-	    $r .= implode(', ', $values); 
-	    return $r; 
-	}
-
-	private function _post($url)
-	{
-		
-		$oauth = array( 'oauth_consumer_key' => '0sd51MbJuom5csE6xeYfw',
-                'oauth_nonce' => time(),
-                'oauth_signature_method' => 'HMAC-SHA1',
-                'oauth_token' => '320236200-efD0A9naQ4vj3pGIrPRda0UOht2ed0RLpH87waAC',
-                'oauth_timestamp' => time(),
-                'oauth_version' => '1.0');
-
-		$header[]         = 'Content-Type: application/x-www-form-urlencoded';          
-    	
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		//curl_setopt($ch, CURLOPT_HTTPHEADER, $header);		
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
-        curl_setopt($ch, CURLOPT_HEADER,false);
- 
-		$data = array(
-		    'status' => 'posting from ideatime'
-		);
-		
-		//curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode("oauth_consumer_key=0sd51MbJuom5csE6xeYfw&
-           oauth_signature_method=HMAC-SHA1&
-           oauth_token=320236200-efD0A9naQ4vj3pGIrPRda0UOht2ed0RLpH87waAC&
-           oauth_timestamp=137131200&
-           oauth_nonce=4572616e48616d6d65724c61686176&
-           oauth_version=1.0&
-           status=tweeting from ideatime"));
-		$response = curl_exec($ch);
-		$header = curl_getinfo($ch);
-		curl_close($ch);
-		return $header;
-
+    function credentials(){
+    	$content = $this->twitter_oauth->get_account_credentials($_SESSION['username']);
+    	print_r($content);
     }
 
 	function access_token()
 	{
 		//get access token
 	    $response = $this->twitter_oauth->get_access_token(false,  $_SESSION['token_secret']);
-	    $_SESSION['oauth_token'] = $response["oauth_token"];
-	    		    
+	   	$_SESSION['oauth_token'] = $response['oauth_token'];	    
 	   	//Check if user already exists
 	   	$user = $this->user_model->get_valid_user($response['screen_name']);
 
@@ -117,7 +73,7 @@ Class Twitter extends CI_Controller
     	//User is not associated with any groups - redirect to group home
 		if(empty($groups)) {			
 			//Save Session Data
-    		$this->ideaslib->create_session($user->id, $response['screen_name'], array('0'),0);    	    		
+    		$this->ideaslib->create_session($user->id, $response['screen_name'], array('0'),0);
     	}else{
     		//Save Session Data
     		$this->ideaslib->create_session($user->id, $response['screen_name'], $groups,0);
