@@ -6,7 +6,7 @@
 
         <!-- Javascript
           ================================================== -->
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>         
         <script type="text/javascript" src="/js/script.js"></script>
 
         <!-- CSS
@@ -20,11 +20,19 @@
 
  <header class="container-fluid">      
     <div class="row-fluid"> 
-      <div class="span8">
-        <h2 ><a class="brand" href="<?php echo  site_url('ideas/index') ?>">IdeaTime</a><span class="small gray">.us</span></h2>        
+      <div class="span7">
+        <h2 ><a class="brand" href="<?php echo  site_url('groups/home') ?>">IdeaTime</a><span class="small gray">.us</span></h2>        
       </div>
-        <?php if(!empty($_SESSION['name'])): ?>
-        <div class="span4">
+        <?php if(!empty($_SESSION['name'])): ?>        
+        <div class="span2">
+           <a href=<?php echo '"' . site_url('groups/home') . '" class="uppercase">'?> Start a Group</a>            
+        </div> 
+          <?php  if($this->user_model->is_user_admin($_SESSION['user_id'])): ?>
+           <div class="span2">
+             <a href=<?php echo '"' . site_url('groups/admin') . '" class="uppercase">'?> Manage Group</a>            
+          </div> 
+          <? endif; ?>
+        <div class="span1">
            <a href=<?php echo '"' . site_url('ideas/logout') . '" class="uppercase">'?> Sign-out</a>            
         </div>  
         <? endif; ?>

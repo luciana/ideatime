@@ -21,9 +21,37 @@ class Groups extends CI_Controller {
 	{						
 		$data = array(
 		'user'=> $_SESSION['username'],			
-		'groups' => $this->group_model->get_groups()
+		'groups' => $this->group_model->get_user_groups($_SESSION['user_id'])
 		);
-		$this->load->view('new_user_view',$data);			
+		$this->load->view('groups/home_view',$data);			
+	}
+
+	function admin(){
+		 $data['group_id'] = $_SESSION['active_group_id'];
+	     $this->load->view('groups/admin_view', $data);	 
+	}
+
+	function request_access(){
+		$data = array(
+			   'requester' => $this->input->post('twitter_name') ,
+			   'groups_id' => $this->input->post('groups') ,
+			  
+			);
+		$this->group_model->post_group_access_request($data);
+		redirect('ideas/home');
+	}
+
+	function grant_access(){
+		$data = array(
+			   'username' => $this->input->post('username') ,
+			   'groups_id' => $this->input->post('groups_id') ,
+			   'users_id' =>$this->input->post('users_id'),
+			   'admin'	=> 0
+			  
+			);
+		print_r($data);
+		//$this->group_model->post_group_access($data);
+		
 	}
 
 	/**

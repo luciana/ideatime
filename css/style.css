@@ -97,8 +97,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', end
             padding: 0 8px;
             position: relative;
             z-index: 5;
-          }
-
+          }          
+  
           a, a:hover, a:active{
             color: #F5385E;
           }
@@ -125,6 +125,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', end
             transition: all 250ms ease 0s;  
           }
 
+          .black{
+
+            color: black;
+          }
           .center {
             text-align: center;
           }
@@ -209,4 +213,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', end
           {
             width: 4%;
           }
+          .thumbnail{
+            width: 90px;           
+          }          
           

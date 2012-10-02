@@ -1,16 +1,17 @@
-<?php $attributes = array('class' => 'well', 'id' => 'newUser') ?>
+<?php $attributes = array('class' => 'well', 'id' => 'requestAccess') ?>
 
-          <?php echo form_open('/twitter/post_status', $attributes); ?>
+          <?php echo form_open('/groups/request_access', $attributes); ?>
            <h3 class="pink">Request Access to an existing group</h3>     
            <?php
           $data = array(
             'name'        => 'twitter_name',            
             'class'   => 'span6',
             'placeholder'       => 'enter your twitter userid',
-            'value'=> $user
+            'value'=> $_SESSION['username']
           );
           echo form_input($data); 
           $options = array();
+          $groups = $this->group_model->get_groups();
           foreach($groups as $row){
             if(!empty($row->name)){                     
                 $options[$row->id] = $row->name;

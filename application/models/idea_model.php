@@ -41,6 +41,13 @@ Class Idea_model extends CI_Model {
 		$this->db->insert('ideas', $postArray);
 	}
 
+	function get_idea_by_group($id)
+	{
+		$query = $this->db->where('groups_id', $id)							
+							->get('ideas');
+		return $query->result();
+	}
+
 	function get_last_idea()
 	{
 		$query = $this->db

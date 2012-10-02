@@ -6,7 +6,7 @@
             'name'        => 'username',            
             'class'   => 'span6',
             'placeholder'       => 'enter your twitter userid',
-            'value'=> $user
+            'value'=>  $_SESSION['username']
           );
           echo form_input($data); 
           $data = array(

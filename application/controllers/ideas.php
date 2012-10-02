@@ -28,7 +28,7 @@ class Ideas extends CI_Controller {
 	{
 		if ( !empty($_SESSION['username']))
 			redirect('ideas/home');
-		else
+		else			
 			redirect('twitter/request_token');
 	}
 
@@ -47,19 +47,20 @@ class Ideas extends CI_Controller {
 		$response = $this->twitter_oauth->get_account_credentials($userData->oauth_uid);
 		$_SESSION['name'] = $response->name;
 		$_SESSION['avatar'] = $response->profile_image_url;
-		
+		$_SESSION['active_group_id'] = null;
 		$groups = $this->group_model->get_user_groups($_SESSION['user_id']);
 		
-		if(!empty($groups)){
-			$data = array(
-	               'groups' => $groups,
-	               'ideas' => $this->idea_model->get_ideas_page()
-	          );
-			$this->load->view('home_view', $data);
-		}else{
-			//user is not assigned to any group
-			redirect('groups/home');
-		}
+		if(empty($groups)){
+			$data['groups'] = null;  
+           	$this->load->view('groups/home_view', $data);
+		}else
+		if(count($groups)>1){
+			$data['groups'] = $groups;             
+            $this->load->view('groups/home_view', $data);
+		}else 
+		if (count($groups)==1){			
+			redirect('ideas/single/'.$groups[0]->groups_id);
+		} 
 	}
 
 	function next_page()
@@ -77,18 +78,19 @@ class Ideas extends CI_Controller {
 	          );
 		$this->load->view('ideas/idea_view', $data);
 	}
- 
-	function show(){
 
-		
-		if ($this->input->post('ajax'))
-		{
-			$data['ideas'] = $this->idea_model->get_last_idea();
-			$data['group'] = 'Founders'; //TODO 
+
+	function single($group_id){
+
+		if($this->group_model->is_user_in_group($group_id, $_SESSION['user_id'])){
+			$_SESSION['active_group_id'] = $group_id;
+			$data = array(
+		               'ideas' => $this->idea_model->get_idea_by_group($group_id),
+		               'groups' =>$this->group_model->get_group($group_id)
+		          );	
 			$this->load->view('ideas/single_idea_view', $data);
-		}
-		else{
-		//	redirect('ideas/home');
+		}else{
+			show_404();
 		}
 	}
 
@@ -97,7 +99,7 @@ class Ideas extends CI_Controller {
 		$array = array(
 					'name' => $this->input->post('idea'),
 					'author' => $this->input->post('author'),
-					'groups_id' => '1',
+					'groups_id' => $this->input->post('group'),
 					'users_id' => $_SESSION['user_id']
 				);
 		$this->idea_model->post_idea($array);
