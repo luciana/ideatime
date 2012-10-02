@@ -21,7 +21,20 @@
 
 <script type="text/javascript">
 var page = 1;
-$(".alert").hide();
+$(".idea-error").hide();
+
+$('.form').bind('keypress', function(e) {
+        if(e.keyCode==13){
+              e.preventDefault();
+              $(".idea-error").hide();
+              var elem = $(this).attr('id');
+              var textElem = elem.replace("form", "add"); 
+              var areaElem = elem.replace("form", "area"); 
+              var comment = $('#'+textElem).val();
+              $('#'+areaElem).append('<div class="alert" style="margin-bottom: 2px;"><button type="button" class="close" data-dismiss="alert">×</button>'+ comment +'</div>');
+              $('#'+textElem).val('');
+        }
+});
 
  $('#sendIdea').click(function() {
   
@@ -47,7 +60,7 @@ $(".alert").hide();
     success: function(msg) {
       $('#voting').append(msg);
       $('#ideaName').val('what is the idea name?');
-      $(".alert").hide();
+      $(".idea-error").hide();
     }
   });
   
@@ -85,7 +98,7 @@ $('.votegoodbutton').live("click", function() {
   var id = $(this).attr("id");
   var temp = id.indexOf('-');
   var ideaId = id.substring(temp+1);
-  $(".alert").hide();
+  $(".idea-error").hide();
   if (!ideaId || ideaId < 0) {
     return false;
   }
@@ -102,7 +115,7 @@ $('.votegoodbutton').live("click", function() {
     url: "<?php echo site_url('ideas/post_vote'); ?>",
     type: 'POST',
     data: form_data,
-    success: function(msg) {
+    success: function(msg) {      
       if (isNaN(msg)){
         $(errorId).show();
         $(errorId).text("Basta! you already voted for this idea");
@@ -122,7 +135,7 @@ $('.votebadbutton').live("click", function() {
   var id = $(this).attr("id");
   var temp = id.indexOf('-');
   var ideaId = id.substring(temp+1);
-  $(".alert").hide();
+  $(".idea-error").hide();
   if (!ideaId || ideaId < 0) {
     return false;
   }
