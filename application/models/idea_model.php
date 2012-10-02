@@ -23,8 +23,10 @@ Class Idea_model extends CI_Model {
 		return $query->result();
 	}
 
-	function get_ideas_page($page = 1)
+	function get_ideas_page($page, $group)
 	{
+		if (empty($page))
+			$page = 1;
 		$start_result = ($page - 1) * $this->max_rows; 
 		$query = $this->db
 						->group_by('ideas.id')
@@ -32,6 +34,7 @@ Class Idea_model extends CI_Model {
 						->from('ideas')
 						->limit($this->max_rows, $start_result)
 						->join('votes', 'ideas.id = votes.ideas_id', 'left')
+						->where('groups_id', $group)
 						->get();
 		return $query->result();
 	}
@@ -62,15 +65,17 @@ Class Idea_model extends CI_Model {
 		return $query->result();
 	}
 
-	function get_total_ideas()
+	function get_total_ideas($group)
 	{
-		$query = $this->db->get('ideas');
+		$query = $this->db
+						->where('groups_id', $group)
+						->get('ideas');
 		return $query->num_rows();
 	}
 
-	function get_total_pages()
+	function get_total_pages($group)
 	{
-		return ceil($this->get_total_ideas()/$this->max_rows);
+		return ceil($this->get_total_ideas($group)/$this->max_rows);
 	}
 
 	function update_vote($voteData)

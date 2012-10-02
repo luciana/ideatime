@@ -59,7 +59,7 @@ $('#moreIdeas').click(function() {
     
     page++;
 
-    if (page > <?php echo $this->idea_model->get_total_pages() ?>)
+    if (page > <?php echo $this->idea_model->get_total_pages($_SESSION['active_group_id']) ?>)
       page = 1;
 
     var form_data = {
@@ -72,6 +72,7 @@ $('#moreIdeas').click(function() {
     success: function(msg) {
       $('#voting').html(msg);
       $('#ideaName').val('');
+      $(".alert").hide();
     }
   });
   return false;
@@ -131,7 +132,7 @@ $('.votebadbutton').live("click", function() {
     id: ideaId,
     ajax: '1'   
   };
-  var spanId = '#ideasea-bad-id-' + ideaId;
+  var spanId = '#idea-bad-id-' + ideaId;
   var errorId = '#idea-error-'+ ideaId;
  
   $.ajax({

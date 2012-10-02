@@ -67,14 +67,12 @@ class Ideas extends CI_Controller {
 	{
 		$page = $this->input->post('pageNum');
 
-		if ($page > $this->idea_model->get_total_pages())
+		$active = $_SESSION['active_group_id'];
+		if ($page > $this->idea_model->get_total_pages($active))
 			$page = 1;
 
-		$group = $_SESSION['groups'][0];
-
 		$data = array(
-	               'group' => $this->group_model->get_group($group->groups_id),
-	               'ideas' => $this->idea_model->get_ideas_page($page)
+	               'ideas' => $this->idea_model->get_ideas_page($page, $active)
 	          );
 		$this->load->view('ideas/idea_view', $data);
 	}
@@ -82,10 +80,17 @@ class Ideas extends CI_Controller {
 
 	function single($group_id){
 
+		$page = $this->input->post('pageNum');
+		$group = $_SESSION['groups'][0];
+		
+
 		if($this->group_model->is_user_in_group($group_id, $_SESSION['user_id'])){
 			$_SESSION['active_group_id'] = $group_id;
+			if ($page > $this->idea_model->get_total_pages($group_id))
+				$page = 1;
+
 			$data = array(
-		               'ideas' => $this->idea_model->get_idea_by_group($group_id),
+		               'ideas' => $this->idea_model->get_ideas_page($page, $group_id),
 		               'groups' =>$this->group_model->get_group($group_id)
 		          );	
 			$this->load->view('ideas/single_idea_view', $data);
