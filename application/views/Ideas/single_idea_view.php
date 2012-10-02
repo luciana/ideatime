@@ -8,8 +8,10 @@
          $data['ideas'] = $ideas ;             
          $this->load->view('ideas/idea_view', $data)?>
      </div>
-      <div style="height:auto;width:70px;margin:-20px auto 0;padding-bottom:20pt;" id="moreIdeas"> 
-         <button style="align:center; width:80px;" class="addidea btn btn-inverse" id="moreIdeas">Next</button>
-     </div>
+              <div style="background-color:white;height:50px;width:90px;margin:-20px auto 0;padding-bottom:20pt;" id="moreIdeas"> 
+                <div style="padding:7px 7px">
+                 <button style="width:80%;" class="addidea btn btn-inverse" id="moreIdeas">Next</button>
+                 </div>
+         </div>
   </div>
 </div> 
