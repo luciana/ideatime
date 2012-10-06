@@ -13,10 +13,11 @@ Class Vote_model extends CI_Model {
 		$data = array(
 				'ideas_id' => $voteData['ideas_id'],
 				$voteData['field'] => 1,
-				'users_id' => $voteData['users_id']
+				'users_id' => $voteData['users_id'],
 				);
 
 		$this->db->insert('votes', $data);
+		$this->idea_model->updated_on($ideaId);
 		return 'success';
 	}
 	function get_idea_votes($ideaId)

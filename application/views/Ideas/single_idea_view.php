@@ -21,26 +21,92 @@
 
 <script type="text/javascript">
 var page = 1;
-$(".idea-error").hide();
+$(window).load(function () {
+  $(".idea-error").hide();
+  $(".comment-area").hide();
+});
+
+$('.commentcell').click(function() {
+    $(".comment-area").hide();
+    var id = $(this).attr('id');
+    var temp = id.indexOf('-');
+    var ideaId = id.substring(temp+1);
+
+    var _data = {
+        idea: ideaId,
+        ajax:1
+      };
+
+    var commentBlock =  "#comment-area-" + ideaId;
+    var commentID = "#comments-" + ideaId;
+    var dropdown = "#dropdown" + ideaId;
+
+    $.ajax({
+      url: "<?php echo site_url('comments/get_for_idea'); ?>",
+      type: 'POST',
+      data: _data,
+      success: function(msg) {
+        $(".idea-error").hide();
+        $(commentBlock).show();
+        $(commentID).html(msg);
+      },
+      error: function() {
+        alert("SHIIT");
+      }
+      
+    });
+
+    return false;
+
+});
+
+
 
 $('.form').bind('keypress', function(e) {
         if(e.keyCode==13){
               e.preventDefault();
               $(".idea-error").hide();
-              var elem = $(this).attr('id');
-              var textElem = elem.replace("form", "add"); 
-              var areaElem = elem.replace("form", "area"); 
-              var comment = $('#'+textElem).val();
-              $('#'+areaElem).append('<div class="alert" style="margin-bottom: 2px;"><button type="button" class="close" data-dismiss="alert">×</button>'+ comment +'</div>');
-              $('#'+textElem).val('');
+              var id = $(this).attr('id');
+              var temp = id.indexOf('-');
+              var id2 = id.substring(temp+1);
+              var temp2 = id2.indexOf('-');
+              var ideaId = id2.substring(temp2+1);
+              var commentBody = "#comment-add-" + ideaId;
+
+              var form_data = {
+                id: ideaId,
+                body: $(commentBody).val(),
+                userID: "<?php echo $_SESSION['user_id'] ?>",
+                ajax:1
+              };
+
+            var commentBlock =  "#comment-area-" + ideaId;
+            var commentID = "#comments-" + ideaId;
+
+            $.ajax({
+              url: "<?php echo site_url('comments/insert'); ?>",
+              type: 'POST',
+              data: form_data,
+              success: function(msg) {
+                $(".idea-error").hide();
+                $(commentID).append(msg);
+                $(commentBody).val() = '';
+              },
+              error: function() {
+                alert("SHIIT");
+              }
+              
+            });
+
+            return false;
+              //$_SESSION['user_id']
+
         }
 });
 
  $('#sendIdea').click(function() {
   
-  var idea = $('#ideaName').val();
-  
-  
+  var idea = $('#ideaName').val();  
   if (!idea || idea == 'what is the idea name?') {
     alert('Please enter your idea');
     return false;
@@ -68,10 +134,8 @@ $('.form').bind('keypress', function(e) {
 });
 
 
-$('#moreIdeas').click(function() {
-    
+$('#moreIdeas').click(function() {  
     page++;
-
     if (page > <?php echo $this->idea_model->get_total_pages($_SESSION['active_group_id']) ?>)
       page = 1;
 

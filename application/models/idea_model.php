@@ -23,6 +23,14 @@ Class Idea_model extends CI_Model {
 		return $query->result();
 	}
 
+	function updated_on($id)
+	{
+		$data = array('updated_on' => date("Y-m-d H:i:s"));
+		$this->db->where('id', $id);
+		$this->db->update('ideas', $data); 
+		return $this->db->last_query();
+	}
+
 	function get_ideas_page($page, $group)
 	{
 		if (empty($page))
@@ -30,6 +38,7 @@ Class Idea_model extends CI_Model {
 		$start_result = ($page - 1) * $this->max_rows; 
 		$query = $this->db
 						->group_by('ideas.id')
+						->order_by('ideas.updated_on', 'desc')
 						->select('ideas.*, SUM(votes.good) as vGood, SUM(votes.bad) as vBad')
 						->from('ideas')
 						->limit($this->max_rows, $start_result)
