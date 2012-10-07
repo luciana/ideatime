@@ -1,5 +1,8 @@
  <?php $this->load->view('common/header') ?>
  <div class="container-fluid"> 
+  <div class="row-fluid">
+    <?php $this->load->view('forms/meetup_form_view.php'); ?>
+  </div>
 <div class="row-fluid">   
     <div class="well">     
          <h3 class="pink">Admin Panel</h3> 

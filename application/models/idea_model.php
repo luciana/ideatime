@@ -2,7 +2,8 @@
 
 Class Idea_model extends CI_Model {
 	
-	var $max_rows = 10;
+	var $max_rows = 3;
+	var $page_active = 1;
 	
 	function get_ideas()
 	{
@@ -10,6 +11,11 @@ Class Idea_model extends CI_Model {
 						->order_by('id')
 						->get('ideas');
 		return $query->result();
+	}
+
+	function set_page_active($value)
+	{
+		$page_active = $value;
 	}
 
 	function get_ideas_votes()

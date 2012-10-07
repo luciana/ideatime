@@ -32,15 +32,6 @@ class Ideas extends CI_Controller {
 			redirect('twitter/request_token');
 	}
 
-	function meetup_login()
-	{		
-		if (isset($_SESSION['meetup_member_id'])) {
-        	$access_token = $_SESSION['meetup_member_id'];
-		} else {
-			redirect('meetup/request_token');
-		}
-	}
-
 	function home()
 	{
 	    $userData = $this->oauth_model->get_user($_SESSION['user_id']);

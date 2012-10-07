@@ -33,6 +33,7 @@ class meetup_oauth
     public function get_request_auth($callback){
         $baseurl = self::REQUEST_URI;
 
+
         //Generate an array with the initial oauth values we need
         $auth = build_auth_array($baseurl, $this->_consumer['key'], $this->_consumer['secret'],
                                  array('oauth_callback'=>urlencode($callback)),
@@ -42,8 +43,11 @@ class meetup_oauth
         foreach($auth as $key => $value)
             $str .= ",{$key}=\"{$value}\"";
         $str = 'Authorization: OAuth '.substr($str, 1);
+        
         //Send it
         $response = $this->_connect($baseurl, $str);
+
+
         //We should get back a request token and secret which
         //we will add to the redirect url.
         parse_str($response, $resarray);
@@ -51,7 +55,7 @@ class meetup_oauth
         $redirect = self::AUTHORIZE_URI."?oauth_token={$resarray['oauth_token']}";
         if($this->_consumer['algorithm'] == OAUTH_ALGORITHMS::RSA_SHA1)return $redirect;
         else return array('token_secret'=>$resarray['oauth_token_secret'], 'redirect'=>$redirect);
-              
+             
     }
     
     /**

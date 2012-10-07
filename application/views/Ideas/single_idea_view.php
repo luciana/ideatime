@@ -1,27 +1,63 @@
  <?php $this->load->view('common/header') ?>
 <div class="container-fluid">  <?php
   //User is only in one group - show idea page           
-  $this->load->view('forms/idea_form_view', $groups);  
-         
-  ?>        
-    <div class="row-fluid">        
-      <h3 class="pink">Vote for the idea</h3>                       
-      <div id="voting" class="well"> 
-       <?php 
-       if(count($ideas)>0){ 
-          $data['ideas'] = $ideas ;             
-          $this->load->view('ideas/idea_view', $data);
-        }?> 
-       </div>
-        <div style="height:auto;width:70px;margin:-20px auto 0;padding-bottom:20pt;" id="moreIdeas"> 
-         <button style="align:center; width:80px;" class="addidea btn btn-inverse" id="moreIdeas">Next</button>
-     </div>
-    </div>
+  $this->load->view('forms/idea_form_view', $groups);           
+  ?>    
+
+<div class="row-fluid">        
+      <h3 class="pink">Vote for the idea</h3>        
+          <div id="myCarousel" class="carousel slide">
+              <a class="carousel-control" href="#myCarousel" data-slide="next" style="float: right;position:relative;" >&rsaquo;</a>                     
+      
+          <!-- Carousel items -->
+          <div class="carousel-inner">            
+             <?php 
+                   if(count($ideas)>0){ 
+                      $data['ideas'] = $ideas ;             
+                      $this->load->view('ideas/idea_view', $data);
+              }?>               
+          </div>
+          <!-- Carousel nav -->
+
+         <!-- <a class="carousel-control" href="#myCarousel" data-slide="prev">Prev</a> --><!-- &lsaquo; -->
+         <!-- <a class="carousel-control" href="#myCarousel" data-slide="next">Next</a>--><!-- &rsaquo;; -->
+        </div>
+</div>
 </div> 
 
 <script type="text/javascript">
 var page = 1;
 $(".idea-error").hide();
+$(".carousel").carousel('pause');
+$('.carousel-control left').click(function(){
+  $('.carousel').carousel('prev');
+});
+
+$('.carousel-control').click(function(){
+  $('.carousel').carousel('next'); 
+});
+
+function nextPage(){
+  page++;
+
+    if (page > <?php echo $this->idea_model->get_total_pages($_SESSION['active_group_id']) ?>)
+      page = 1;
+
+    var form_data = {
+      pageNum: page
+    };
+    $.ajax({
+    url: "<?php echo site_url('ideas/next_page'); ?>",
+    type: 'POST',
+    data: form_data,
+    success: function(msg) {
+      var elem = $('.carousel-inner');      
+      elem.addClass('active').children().removeClass('active');
+      elem.append(' <div class="well active item">' + msg + '</div>');     
+    }
+  });
+  return false;
+}
 
 $('.form').bind('keypress', function(e) {
         if(e.keyCode==13){
@@ -67,10 +103,8 @@ $('.form').bind('keypress', function(e) {
   return false;
 });
 
-
-$('#moreIdeas').click(function() {
-    
-    page++;
+function nextPage1(){
+  page++;
 
     if (page > <?php echo $this->idea_model->get_total_pages($_SESSION['active_group_id']) ?>)
       page = 1;
@@ -89,6 +123,12 @@ $('#moreIdeas').click(function() {
     }
   });
   return false;
+}
+
+$('#moreIdeas').click(function() {
+    
+    nextPage1();
+    
 
 });
 
