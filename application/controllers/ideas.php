@@ -54,21 +54,6 @@ class Ideas extends CI_Controller {
 		} 
 	}
 
-	function next_page()
-	{
-		$page = $this->input->post('pageNum');
-
-		$active = $_SESSION['active_group_id'];
-		if ($page > $this->idea_model->get_total_pages($active))
-			$page = 1;
-
-		$data = array(
-	               'ideas' => $this->idea_model->get_ideas_page($page, $active)
-	          );
-		$this->load->view('ideas/idea_view', $data);
-	}
-
-
 	function single($group_id){
 
 		$page = $this->input->post('pageNum');
@@ -81,7 +66,7 @@ class Ideas extends CI_Controller {
 				$page = 1;
 
 			$data = array(
-		               'ideas' => $this->idea_model->get_ideas_page($page, $group_id),
+		              'ideas' => $this->idea_model->get_idea_by_group($_SESSION['active_group_id']),
 		               'groups' =>$this->group_model->get_group($group_id)
 		          );	
 			$this->load->view('ideas/single_idea_view', $data);
@@ -101,8 +86,15 @@ class Ideas extends CI_Controller {
 		$this->idea_model->post_idea($array);
 		
 		if ($this->input->post('ajax'))
-		{
-			$data['ideas'] = $this->idea_model->get_last_idea();
+		{				
+			$data = array(
+				'ideas' => $this->idea_model->get_idea_by_group($_SESSION['active_group_id']),
+				'start' => 0,
+				'start_active' => 0,
+				'end'=> $this->idea_model->max_rows -1,
+				'perpage' => $this->idea_model->max_rows
+				);
+			
 			$this->load->view('ideas/idea_view', $data);
 		}
 		else

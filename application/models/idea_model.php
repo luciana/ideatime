@@ -2,7 +2,7 @@
 
 Class Idea_model extends CI_Model {
 	
-	var $max_rows = 3;
+	var $max_rows = 5;
 	var $page_active = 1;
 	
 	function get_ideas()
@@ -29,21 +29,13 @@ Class Idea_model extends CI_Model {
 		return $query->result();
 	}
 
-	function get_ideas_page($page, $group)
+	function updated_on($id)
 	{
-		if (empty($page))
-			$page = 1;
-		$start_result = ($page - 1) * $this->max_rows; 
-		$query = $this->db
-						->group_by('ideas.id')
-						->select('ideas.*, SUM(votes.good) as vGood, SUM(votes.bad) as vBad')
-						->from('ideas')
-						->limit($this->max_rows, $start_result)
-						->join('votes', 'ideas.id = votes.ideas_id', 'left')
-						->where('groups_id', $group)
-						->get();
-		return $query->result();
-	}
+		$data = array('updated_on' => date("Y-m-d H:i:s"));
+		$this->db->where('id', $id);
+		$this->db->update('ideas', $data); 
+		return $this->db->last_query();
+	}	
 
 	function post_idea($postArray)
 	{
@@ -52,10 +44,21 @@ Class Idea_model extends CI_Model {
 
 	function get_idea_by_group($id)
 	{
-		$query = $this->db->where('groups_id', $id)							
-							->get('ideas');
-		return $query->result();
-	}
+		$query = $this->db
+						->group_by('ideas.id')
+						->order_by('ideas.updated_on', 'desc')
+						->select('ideas.*, SUM(votes.good) as vGood, SUM(votes.bad) as vBad')
+						->from('ideas')		
+						->from('comments')				
+						->join('votes', 'ideas.id = votes.ideas_id', 'left')						
+						->where('groups_id', $id)	
+						->order_by("ideas.created_on", "desc")
+						->order_by("comments.date", "desc")
+						->order_by("ideas.updated_on", "desc")					
+						->get();		
+		return $query->result();		
+
+		}
 
 	function get_last_idea()
 	{
@@ -66,8 +69,7 @@ Class Idea_model extends CI_Model {
 						->select('ideas.*, SUM(votes.good) as vGood, SUM(votes.bad) as vBad')
 						->from('ideas')
 						->join('votes', 'ideas.id = votes.ideas_id', 'left')
-						->get();
-		//return $this->db->last_query();
+						->get();		
 		return $query->result();
 	}
 

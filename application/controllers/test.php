@@ -38,6 +38,6 @@ Class Test extends CI_Controller
 
 	function query()
 	{
-		var_dump($this->idea_model->get_last_idea());
+		var_dump($this->idea_model->updated_on(19));
 	}
 }

@@ -4,79 +4,122 @@
   $this->load->view('forms/idea_form_view', $groups);           
   ?>    
 
-<div class="row-fluid">        
+  <div class="row-fluid">        
       <h3 class="pink">Vote for the idea</h3>        
-          <div id="myCarousel" class="carousel slide">
-              <a class="carousel-control" href="#myCarousel" data-slide="next" style="float: right;position:relative;" >&rsaquo;</a>                     
-      
-          <!-- Carousel items -->
-          <div class="carousel-inner">            
-             <?php 
-                   if(count($ideas)>0){ 
-                      $data['ideas'] = $ideas ;             
+      <div id="myCarousel" class="carousel slide">
+          <a class="carousel-control pull-right" href="#myCarousel" data-slide="next" style="position:relative;margin-right:100px;" >Next</a>                               
+            <div class="carousel-inner">            
+               <?php 
+                     if(count($ideas)>0){ 
+                        $data = array(
+                          'ideas' => $ideas,
+                          'start' => 0,
+                          'start_active' => 0,
+                          'end'=> $this->idea_model->max_rows -1,
+                          'perpage' => $this->idea_model->max_rows
+                          );          
                       $this->load->view('ideas/idea_view', $data);
-              }?>               
-          </div>
-          <!-- Carousel nav -->
-
-         <!-- <a class="carousel-control" href="#myCarousel" data-slide="prev">Prev</a> --><!-- &lsaquo; -->
-         <!-- <a class="carousel-control" href="#myCarousel" data-slide="next">Next</a>--><!-- &rsaquo;; -->
-        </div>
-</div>
+                }?>               
+            </div>
+     </div>
+  </div>
 </div> 
 
 <script type="text/javascript">
 var page = 1;
-$(".idea-error").hide();
-$(".carousel").carousel('pause');
-$('.carousel-control left').click(function(){
-  $('.carousel').carousel('prev');
-});
 
-$('.carousel-control').click(function(){
-  $('.carousel').carousel('next'); 
-});
-
-function nextPage(){
-  page++;
-
-    if (page > <?php echo $this->idea_model->get_total_pages($_SESSION['active_group_id']) ?>)
-      page = 1;
-
-    var form_data = {
-      pageNum: page
-    };
-    $.ajax({
-    url: "<?php echo site_url('ideas/next_page'); ?>",
-    type: 'POST',
-    data: form_data,
-    success: function(msg) {
-      var elem = $('.carousel-inner');      
-      elem.addClass('active').children().removeClass('active');
-      elem.append(' <div class="well active item">' + msg + '</div>');     
-    }
+$(document).ready(function() {
+  $(".idea-error").hide();
+  $(".comment-area").hide();
+    
+  $(".carousel").carousel('pause');
+  $('.carousel-control left').click(function(){
+    $('.carousel').carousel('prev');
   });
-  return false;
-}
+
+  $('.carousel-control').click(function(){
+    $('.carousel').carousel('next'); 
+  });
+
+$('.commentcell').click(function() {
+    $(".comment-area").hide();
+    var id = $(this).attr('id');
+    var temp = id.indexOf('-');
+    var ideaId = id.substring(temp+1);
+
+    var _data = {
+        idea: ideaId,
+        ajax:1
+      };
+
+    var commentBlock =  "#comment-area-" + ideaId;
+    var commentID = "#comments-" + ideaId;
+    var dropdown = "#dropdown" + ideaId;
+
+    $.ajax({
+      url: "<?php echo site_url('comments/get_for_idea'); ?>",
+      type: 'POST',
+      data: _data,
+      success: function(msg) {
+        $(".idea-error").hide();
+        $(commentBlock).show();
+        $(commentID).html(msg);
+      },
+      error: function() {
+        alert("SHIIT");
+      }
+      
+    });
+
+    return false;
+
+});
+
+
 
 $('.form').bind('keypress', function(e) {
         if(e.keyCode==13){
               e.preventDefault();
               $(".idea-error").hide();
-              var elem = $(this).attr('id');
-              var textElem = elem.replace("form", "add"); 
-              var areaElem = elem.replace("form", "area"); 
-              var comment = $('#'+textElem).val();
-              $('#'+areaElem).append('<div class="alert" style="margin-bottom: 2px;"><button type="button" class="close" data-dismiss="alert">×</button>'+ comment +'</div>');
-              $('#'+textElem).val('');
+              var id = $(this).attr('id');
+              var temp = id.indexOf('-');
+              var id2 = id.substring(temp+1);
+              var temp2 = id2.indexOf('-');
+              var ideaId = id2.substring(temp2+1);
+              var commentBody = "#comment-add-" + ideaId;
+
+              var form_data = {
+                id: ideaId,
+                body: $(commentBody).val(),
+                userID: "<?php echo $_SESSION['user_id'] ?>",
+                ajax:1
+              };
+
+            var commentBlock =  "#comment-area-" + ideaId;
+            var commentID = "#comments-" + ideaId;
+
+            $.ajax({
+              url: "<?php echo site_url('comments/insert'); ?>",
+              type: 'POST',
+              data: form_data,
+              success: function(msg) {
+                $(".idea-error").hide();
+                $(commentID).append(msg);
+                $(commentBody).val();
+              },
+              error: function() {
+                alert("SHIIT");
+              }
+              
+            });
+
+            return false;             
         }
 });
 
  $('#sendIdea').click(function() {
   
-  var idea = $('#ideaName').val();
-  
-  
+  var idea = $('#ideaName').val();  
   if (!idea || idea == 'what is the idea name?') {
     alert('Please enter your idea');
     return false;
@@ -103,38 +146,7 @@ $('.form').bind('keypress', function(e) {
   return false;
 });
 
-function nextPage1(){
-  page++;
-
-    if (page > <?php echo $this->idea_model->get_total_pages($_SESSION['active_group_id']) ?>)
-      page = 1;
-
-    var form_data = {
-      pageNum: page
-    };
-    $.ajax({
-    url: "<?php echo site_url('ideas/next_page'); ?>",
-    type: 'POST',
-    data: form_data,
-    success: function(msg) {
-      $('#voting').html(msg);
-      $('#ideaName').val('');
-      $(".alert").hide();
-    }
-  });
-  return false;
-}
-
-$('#moreIdeas').click(function() {
-    
-    nextPage1();
-    
-
-});
-
-
-$('.votegoodbutton').live("click", function() {
-  
+$('.votegoodbutton').live("click", function() {  
   var id = $(this).attr("id");
   var temp = id.indexOf('-');
   var ideaId = id.substring(temp+1);
@@ -205,6 +217,11 @@ $('.votebadbutton').live("click", function() {
   });
   
   return false;
+});
+
+
+
+
 });
 
 function getTotal(ideaId)
