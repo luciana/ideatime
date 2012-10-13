@@ -37,8 +37,7 @@ class Ideas extends CI_Controller {
 	   
 	    $userData = $this->oauth_model->get_user($_SESSION['user_id']);
 	    //print_r($userData);
-		$response = $this->twitter_oauth->get_account_credentials($userData->oauth_uid);
-		//print_r($response);
+		$response = $this->twitter_oauth->get_account_credentials($userData->oauth_uid);		
 		$_SESSION['name'] = $response->name;
 		$_SESSION['avatar'] = $response->profile_image_url;
 		$_SESSION['active_group_id'] = null;

@@ -114,10 +114,12 @@ class twitter_oauth
 
     public function get_account_credentials($userId)
     { 
-        $url = 'https://api.twitter.com/1/users/show/'.$userId.'.json';       
+        $url = 'https://api.twitter.com/1/users/show.json?user_id='.$userId;               
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($ch);        
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        $response = curl_exec($ch);               
         curl_close($ch);
         $json = json_decode($response);
         return $json;
