@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://ideatime/';
+$config['base_url']	= 'http://idea:8888/';
 /*
 |--------------------------------------------------------------------------
 | Index File

@@ -14,11 +14,11 @@ Class Comment_model extends CI_Model
 	function insert_comment($data)
 	{
 		$this->db->insert('comments', $data);
+		return $this->db->insert_id();
 	}
 
-	function last_comment()
+	function last_comment($commentID)
 	{
-		$commentID = $this->db->insert_id();
 		$query = $this->get_comment_by_id($commentID);
 		return $query->result();
 	}

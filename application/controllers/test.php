@@ -27,6 +27,27 @@ Class Test extends CI_Controller
 
 	}
 
+	function comment()
+	{
+		var_dump($this->comment_model->last_comment());
+	}
+
+	function testInsert()
+	{
+		$ideaId = 42;
+		$array = array(
+				'body' => 'some random text',
+				'ideas_id' => $ideaId,
+				'users_id' => 1
+			);
+		$commentID = $this->comment_model->insert_comment($array);
+		$this->idea_model->updated_on($ideaId);
+		$data['comments'] = $this->comment_model->last_comment($commentID);
+		var_dump($data);
+		echo $this->load->view('comments/comment_display_view', $data);
+
+	}
+
 	function twitter()
 	{
 		  $userArray = $this->user_model->get_user('2');

@@ -28,9 +28,9 @@ Class Comments extends CI_Controller
 				'ideas_id' => $ideaId,
 				'users_id' => $this->input->post('userID')
 			);
-		$this->comment_model->insert_comment($data);
+		$commentID = $this->comment_model->insert_comment($data);
 		$this->idea_model->updated_on($ideaId);
-		$data['comments'] = $this->comment_model->last_comment();
+		$data['comments'] = $this->comment_model->last_comment($commentID);
 		echo $this->load->view('comments/comment_display_view', $data);
 
 	}
