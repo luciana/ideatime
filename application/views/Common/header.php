@@ -27,13 +27,8 @@
         <?php if(!empty($_SESSION['name'])): ?>        
         <div class="span2">
            <a href=<?php echo '"' . site_url('groups/home') . '" class="uppercase">'?> Start a Group</a>            
-        </div> 
-          <?php  if($this->user_model->is_user_admin($_SESSION['user_id'])): ?>
-           <div class="span2">
-             <a href=<?php echo '"' . site_url('groups/admin') . '" class="uppercase">'?> Manage Group</a>            
-          </div> 
-          <? endif; ?>
-        <div class="span1">
+        </div>          
+        <div class="span2">
            <a href=<?php echo '"' . site_url('ideas/logout') . '" class="uppercase">'?> Sign-out</a>            
         </div>  
         <? endif; ?>

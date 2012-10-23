@@ -105,7 +105,7 @@ $('.form').bind('keypress', function(e) {
               success: function(msg) {
                 $(".idea-error").hide();
                 $(commentID).append(msg);
-                $(commentBody).val();
+                $(commentBody).val('');
               },
               error: function() {
                 alert("SHIIT");

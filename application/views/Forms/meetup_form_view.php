@@ -1,8 +1,7 @@
  <div class="row-fluid">                    
     <h3 class="pink">Create an Event</h3> 
     <div class="well">
-       <a href=<?php echo '"' . site_url('meetup/meetup_get_event') . '" class="uppercase">'?> View Event</a>
-
+       <a href=<?php echo '"' . site_url('twitter/post_user_status') . '" class="uppercase">'?> Post Twitter</a> 
     <?php 
     if (!empty($_SESSION['meetup_member_id'])) {    		
     	?>

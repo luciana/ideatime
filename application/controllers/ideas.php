@@ -35,8 +35,7 @@ class Ideas extends CI_Controller {
 	function home()
 	{
 	   
-	    $userData = $this->oauth_model->get_user($_SESSION['user_id']);
-	    //print_r($userData);
+	    $userData = $this->oauth_model->get_user($_SESSION['user_id']);	    
 		$response = $this->twitter_oauth->get_account_credentials($userData->oauth_uid);		
 		$_SESSION['name'] = $response->name;
 		$_SESSION['avatar'] = $response->profile_image_url;
@@ -59,8 +58,7 @@ class Ideas extends CI_Controller {
 	function single($group_id){
 
 		$page = $this->input->post('pageNum');
-		$group = $_SESSION['groups'][0];
-		
+		$group = $_SESSION['groups'][0];		
 
 		if($this->group_model->is_user_in_group($group_id, $_SESSION['user_id'])){
 			$_SESSION['active_group_id'] = $group_id;
@@ -71,6 +69,7 @@ class Ideas extends CI_Controller {
 		              'ideas' => $this->idea_model->get_idea_by_group($_SESSION['active_group_id']),
 		               'groups' =>$this->group_model->get_group($group_id)
 		          );	
+
 			$this->load->view('ideas/single_idea_view', $data);
 		}else{
 			show_404();
@@ -85,8 +84,8 @@ class Ideas extends CI_Controller {
 					'groups_id' => $this->input->post('group'),
 					'users_id' => $_SESSION['user_id']
 				);
-		$this->idea_model->post_idea($array);
-		
+		$ideaID = $this->idea_model->post_idea($array);
+		$this->idea_model->updated_on($ideaID);
 		if ($this->input->post('ajax'))
 		{				
 			$data = array(

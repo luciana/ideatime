@@ -40,10 +40,11 @@ Class Idea_model extends CI_Model {
 	function post_idea($postArray)
 	{
 		$this->db->insert('ideas', $postArray);
+		return $this->db->insert_id();
 	}
 
 	function get_idea_by_group($id)
-	{
+	{		
 		$query = $this->db
 						->group_by('ideas.id')
 						->order_by('ideas.updated_on', 'desc')
@@ -51,14 +52,13 @@ Class Idea_model extends CI_Model {
 						->from('ideas')		
 						->from('comments')				
 						->join('votes', 'ideas.id = votes.ideas_id', 'left')						
-						->where('groups_id', $id)	
+						->where('ideas.groups_id', $id)	
 						->order_by("ideas.created_on", "desc")
 						->order_by("comments.date", "desc")
-						->order_by("ideas.updated_on", "desc")					
+						->order_by("ideas.updated_on", "desc")
 						->get();		
-		return $query->result();		
-
-		}
+		return $query->result();
+	}
 
 	function get_last_idea()
 	{

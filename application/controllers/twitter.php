@@ -23,10 +23,7 @@ Class Twitter extends CI_Controller
 	    redirect($response['redirect']);
 	}
 
-    function post_user_status(){
-    	//$url = self::TWITTER_API.self::TWITTER_POST_STATUS;
-    	//$twitter_name, $groups
-    	//$content = $this->_post($url);
+    function post_user_status(){    	
     	$content = $this->twitter_oauth->post_status();    	
     	var_dump($content);
     }

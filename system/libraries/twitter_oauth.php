@@ -8,7 +8,6 @@ class twitter_oauth
     const AUTHORIZE_URI = '/oauth/authorize';
     const REQUEST_URI   = '/oauth/request_token';
     const ACCESS_URI    = '/oauth/access_token';
-    const POST_STATUS_URI ='/1/statuses/update.json';
     
     //Array that should contain the consumer secret and
     //key which should be passed into the constructor.
@@ -33,7 +32,7 @@ class twitter_oauth
         $this->_consumer = $params;
     }
     
-    /** 
+    /**
      * This is called to begin the oauth token exchange. This should only
      * need to be called once for a user, provided they allow oauth access.
      * It will return a URL that your site should redirect to, allowing the
@@ -68,7 +67,7 @@ class twitter_oauth
         if($this->_consumer['algorithm'] == OAUTH_ALGORITHMS::RSA_SHA1)return $redirect;
         else return array('token_secret'=>$resarray['oauth_token_secret'], 'redirect'=>$redirect);
     }
-
+    
     /**
      * This is called to finish the oauth token exchange. This too should
      * only need to be called once for a user. The token returned should
@@ -119,43 +118,20 @@ class twitter_oauth
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-        $response = curl_exec($ch);               
+        $response = curl_exec($ch);
         curl_close($ch);
         $json = json_decode($response);
         return $json;
     } 
 
-    public function post_status(){
-        //$baseurl = self::SCHEME.'://'.self::HOST.self::POST_STATUS_URI;
-        $baseurl = 'https://api.twitter.com/1.1/statuses/update.json';
-
-        $auth = get_auth_header($baseurl, $this->_consumer['key'], $this->_consumer['secret'],
-                                array('oauth_token'=>urlencode($_SESSION['oauth_token'])), 'POST', $this->_consumer['algorithm']);
-
-        $url ='POST%26';
-        $url .='https%3A%2F%2Fapi.twitter.com%2F1.1%2Fstatuses%2Fupdate.json&';      
-        $url .='oauth_consumer_key%3D'.$auth['oauth_consumer_key'].'%26';
-        $url .='oauth_nonce%3D'.$auth['[oauth_nonce]'].'%26';
-        $url .='oauth_signature_method%3D'.$auth['oauth_signature_method'].'%26';
-        $url .='oauth_timestamp%3D'.$auth['oauth_timestamp'].'%26';
-        $url .='oauth_token%3D'.$_SESSION['oauth_token'].'%26';
-        $url .='oauth_version%3D'.$auth['oauth_version'].'%26';
-        $url .='status=Maybe%20he%27ll%20finally%20find%20his%20keys.%20%23luciana123_2002';
-
-
-        //Send it
-        $response = $this->_connect($url, $auth, 'POST');
-        return $response;
-    }
-
-   /**
+    /**
      * Connects to the server and sends the request,
      * then returns the response from the server.
      * @param <type> $url
      * @param <type> $auth
      * @return <type>
      */
-    private function _connect($url, $auth, $type='GET')
+    private function _connect($url, $auth)
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
@@ -164,18 +140,7 @@ class twitter_oauth
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array($auth));
-        curl_setopt($ch, CURLOPT_VERBOSE, true); // Display communication with server
 
-        if($type=='POST'){
-            $data = array(
-                'status' => 'posting from ideatime',
-                'include_entities' => true
-            );
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        }
-
-        
         $response = curl_exec($ch);
         curl_close($ch);
         return $response;
