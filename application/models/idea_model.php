@@ -48,10 +48,8 @@ Class Idea_model extends CI_Model {
 		$query = $this->db
 						->select('ideas.*, SUM(votes.good) as vGood, SUM(votes.bad) as vBad')
 						->from('ideas')		
-						->from('comments')				
-						->join('votes', 'ideas.id = votes.ideas_id', 'left')	
-						->where('votes.ideas_id = comments.ideas_id')	
-						->where('ideas.id = comments.ideas_id')						
+						->join('comments', 'ideas.id = comments.ideas_id', 'left')	
+						->join('votes', 'ideas.id = votes.ideas_id', 'left')														
 						->where('ideas.groups_id', $id)	
 						->group_by('ideas.id')
 						->order_by('ideas.updated_on', 'desc')

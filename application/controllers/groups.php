@@ -32,12 +32,28 @@ class Groups extends CI_Controller {
 	}
 
 	function request_access(){
+		
+		$group_id = $this->input->post('groups');
+		$username = $this->input->post('twitter_name');
+		
+		//post it the access table, so I can track it
 		$data = array(
-			   'requester' => $this->input->post('twitter_name') ,
-			   'groups_id' => $this->input->post('groups') ,
+			   'requester' => $username  ,
+			   'groups_id' => $group_id ,
 			  
 			);
 		$this->group_model->post_group_access_request($data);
+
+		//give them access
+		$array = array(
+					'username' => $username,
+					'users_id' => $_SESSION['user_id'],
+					'groups_id' => $group_id,
+					'admin' => 0					
+				);
+		$this->group_model->post_group_access($array);
+
+
 		redirect('ideas/home');
 	}
 
