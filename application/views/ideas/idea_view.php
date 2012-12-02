@@ -20,7 +20,7 @@ foreach($ideas as $row): ?>
               <li class="well thumbnail span12" <?php echo $position ?> >
                     <div class="alert caption"><h3 class="ideaname" id="idea-name-<?php echo $row->id ?>"><?php echo $row->name ?> </h3></div>
                     <div class="alert alert-error idea-error" id="idea-error-<?php echo $row->id ?>">></div>
-					<div class="span1">					
+					<div class="span2">					
 						<button class="votegoodbutton btn btn-inverse" id="voteGood-<?php echo $row->id ?>"  value="<?php echo $row->id ?>" >
 							<i class="icon-thumbs-up icon-white"></i>
 							<?php $good =  !empty($row->vGood) ? $row->vGood : 0 ?>
