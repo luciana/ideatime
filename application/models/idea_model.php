@@ -11,6 +11,7 @@ Class Idea_model extends CI_Model {
 						->order_by('id')	
 						->get('ideas');
 						
+
 		return $query->result();
 	}
 
@@ -78,7 +79,6 @@ Class Idea_model extends CI_Model {
 						->order_by("ideas.updated_on", "desc")
 						->get();			
 		return $query->result();
-
 	}
 
 	function get_last_idea()

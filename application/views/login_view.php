@@ -9,8 +9,9 @@
         </div>                 
         <?php } ?>   
 </section>
+
 <section class="center">
-	<img src="/img/ideatime_oscar_banner.png"  />
+	<img src="http://ideatime.us/img/ideatime_oscar_banner.png"  />
 </section>
 
 <?php $this->load->view('common/footer') ?>

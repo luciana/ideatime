@@ -1,6 +1,5 @@
 $(function() {    
 
-
 $('input').bind('focus', function(){
       dataLayer.push({
              'event': 'GAEvent', 

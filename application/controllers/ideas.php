@@ -76,6 +76,7 @@ class Ideas extends CI_Controller {
 		}
 	}
 
+
 	function archive($group_id){
 			
 		if($this->group_model->is_user_in_group($group_id, $_SESSION['user_id'])){
@@ -91,6 +92,7 @@ class Ideas extends CI_Controller {
 		}
 
 	}
+
 
 	function submit()
 	{

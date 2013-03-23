@@ -48,22 +48,6 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['prod']['hostname'] = 'localhost';
-$db['prod']['username'] = 'chad_ideatime';
-$db['prod']['password'] = 'Pr0gressive';
-$db['prod']['database'] = 'chad_ideatime';
-$db['prod']['dbdriver'] = 'mysql';
-$db['prod']['dbprefix'] = '';
-$db['prod']['pconnect'] = TRUE;
-$db['prod']['db_debug'] = TRUE;
-$db['prod']['cache_on'] = FALSE;
-$db['prod']['cachedir'] = '';
-$db['prod']['char_set'] = 'utf8';
-$db['prod']['dbcollat'] = 'utf8_general_ci';
-$db['prod']['swap_pre'] = '';
-$db['prod']['autoinit'] = TRUE;
-$db['prod']['stricton'] = FALSE;
-
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'root';
 $db['default']['password'] = 'root';
@@ -80,6 +64,3 @@ $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
-
-/* End of file database.php */
-/* Location: ./application/config/database.php */
