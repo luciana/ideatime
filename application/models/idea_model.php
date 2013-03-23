@@ -7,9 +7,10 @@ Class Idea_model extends CI_Model {
 	
 	function get_ideas()
 	{
-		$query = $this->db
-						->order_by('id')
+		$query = $this->db						
+						->order_by('id')	
 						->get('ideas');
+						
 		return $query->result();
 	}
 
@@ -51,6 +52,7 @@ Class Idea_model extends CI_Model {
 						->join('comments', 'ideas.id = comments.ideas_id', 'left')	
 						->join('votes', 'ideas.id = votes.ideas_id', 'left')														
 						->where('ideas.groups_id', $id)	
+						->where('ideas.archive_id is null')	
 						->group_by('ideas.id')
 						->order_by('ideas.updated_on', 'desc')
 						->order_by("ideas.created_on", "desc")
@@ -60,11 +62,30 @@ Class Idea_model extends CI_Model {
 		return $query->result();
 	}
 
+	function get_archive_idea_by_group($id)
+	{
+		$query = $this->db
+						->select('ideas.*, SUM(votes.good) as vGood, SUM(votes.bad) as vBad')
+						->from('ideas')		
+						->join('comments', 'ideas.id = comments.ideas_id', 'left')	
+						->join('votes', 'ideas.id = votes.ideas_id', 'left')														
+						->where('ideas.groups_id', $id)	
+						->where('archive_id', '1')	
+						->group_by('ideas.id')
+						->order_by('ideas.updated_on', 'desc')
+						->order_by("ideas.created_on", "desc")
+						->order_by("comments.date", "desc")
+						->order_by("ideas.updated_on", "desc")
+						->get();			
+		return $query->result();
+
+	}
+
 	function get_last_idea()
 	{
 		$query = $this->db
 						->group_by('ideas.id')
-						->order_by('ideas.id', 'desc')
+						->order_by('ideas.id', 'desc')						
 						->limit(1)
 						->select('ideas.*, SUM(votes.good) as vGood, SUM(votes.bad) as vBad')
 						->from('ideas')
@@ -76,7 +97,8 @@ Class Idea_model extends CI_Model {
 	function get_total_ideas($group)
 	{
 		$query = $this->db
-						->where('groups_id', $group)
+						->where('groups_id', $group)		
+						->where('ideas.archive_id is null')				
 						->get('ideas');
 		return $query->num_rows();
 	}

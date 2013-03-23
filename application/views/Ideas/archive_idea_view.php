@@ -1,12 +1,9 @@
  <?php $this->load->view('common/header') ?>
-<div class="container-fluid">  <?php
-  //User is only in one group - show idea page           
-  $this->load->view('forms/idea_form_view', $groups);           
-  ?>    
+<div class="container-fluid"> 
 
   <div class="row-fluid">        
-      <h3 class="pink">Vote for the idea</h3>        
-      <div id="myCarousel1" class="carousel1 slide1">                                              
+      <h3 class="pink">Last year we had <?php echo count($ideas) ?> brilliant ideas!</h3>        
+      <div>                                              
                <?php              
                      if(count($ideas)>0){ 
                         $data = array(
@@ -17,11 +14,6 @@
                           'perpage' => $this->idea_model->max_rows
                           );          
                       $this->load->view('ideas/idea_view', $data);
-                }else{
-                   
-                  ?> <div class="alert caption"> Ideas have been archived.  
-                  <a name="archive-ideas" href=<?php echo '"' . site_url('ideas/archive/'.$_SESSION['active_group_id']) . '" class="uppercase">'?> View Archived Ideas </a>   
-                  </div><?php
                 }?>                         
      </div>
   </div>

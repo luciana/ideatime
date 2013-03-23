@@ -76,6 +76,22 @@ class Ideas extends CI_Controller {
 		}
 	}
 
+	function archive($group_id){
+			
+		if($this->group_model->is_user_in_group($group_id, $_SESSION['user_id'])){
+			$_SESSION['active_group_id'] = $group_id;
+			$data = array(
+		              'ideas' => $this->idea_model->get_archive_idea_by_group($_SESSION['active_group_id']),
+		               'groups' =>$this->group_model->get_group($group_id)
+		          );	
+
+			$this->load->view('ideas/archive_idea_view', $data);
+		}else{
+			show_404();
+		}
+
+	}
+
 	function submit()
 	{
 		$array = array(

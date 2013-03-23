@@ -48,6 +48,22 @@
 $active_group = 'default';
 $active_record = TRUE;
 
+$db['prod']['hostname'] = 'localhost';
+$db['prod']['username'] = 'chad_ideatime';
+$db['prod']['password'] = 'Pr0gressive';
+$db['prod']['database'] = 'chad_ideatime';
+$db['prod']['dbdriver'] = 'mysql';
+$db['prod']['dbprefix'] = '';
+$db['prod']['pconnect'] = TRUE;
+$db['prod']['db_debug'] = TRUE;
+$db['prod']['cache_on'] = FALSE;
+$db['prod']['cachedir'] = '';
+$db['prod']['char_set'] = 'utf8';
+$db['prod']['dbcollat'] = 'utf8_general_ci';
+$db['prod']['swap_pre'] = '';
+$db['prod']['autoinit'] = TRUE;
+$db['prod']['stricton'] = FALSE;
+
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'root';
 $db['default']['password'] = 'root';
@@ -64,21 +80,6 @@ $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
-$db['dev']['hostname'] = '173.192.120.220';
-$db['dev']['username'] = 'luciana_dev';
-$db['dev']['password'] = 'ideatime10';
-$db['dev']['database'] = 'luciana_ideatime_dev';
-$db['dev']['dbdriver'] = 'mysql';
-$db['dev']['dbprefix'] = '';
-$db['dev']['pconnect'] = TRUE;
-$db['dev']['db_debug'] = TRUE;
-$db['dev']['cache_on'] = FALSE;
-$db['dev']['cachedir'] = '';
-$db['dev']['char_set'] = 'utf8';
-$db['dev']['dbcollat'] = 'utf8_general_ci';
-$db['dev']['swap_pre'] = '';
-$db['dev']['autoinit'] = TRUE;
-$db['dev']['stricton'] = FALSE;
 
 /* End of file database.php */
 /* Location: ./application/config/database.php */

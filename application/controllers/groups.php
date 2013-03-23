@@ -95,4 +95,3 @@ class Groups extends CI_Controller {
 		redirect('ideas/home');
 	}
 }
-

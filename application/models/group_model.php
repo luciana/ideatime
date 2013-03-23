@@ -49,7 +49,6 @@ class Group_model extends CI_Model {
 		return $query->row_array();
 	}
 
-	 
 	function post_group_access_request($data)
 	{
 		$this->db->insert('group_access_request', $data);
