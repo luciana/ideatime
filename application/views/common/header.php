@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
        <p name="page-header" class="tagline center no-loggedin uppercase tracking">
       <?php if(!empty($_SESSION['username'])): ?>
       <?php  echo '<img src="'.$_SESSION['avatar'].'">' ?>
-       <?php echo $_SESSION['name'].'</img>' ?> 
+      <?php echo $_SESSION['name'].'</img>' ?>
      <?php else: ?>
        <?php   echo 'Have an idea to share ?'; ?>
        <? endif; ?>

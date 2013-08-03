@@ -18,7 +18,7 @@ foreach($ideas as $row): ?>
 			<div class="<?php echo $active ?> item">  	
 			 <ul class="thumbnails"> <?php } ?>				
               <li class="well thumbnail span12" <?php echo $position ?> >
-                    <div class="alert caption"><h3 class="ideaname" id="idea-name-<?php echo $row->id ?>"><?php echo $row->name ?> </h3></div>
+                    <div class="alert caption"><h3 class="ideaname" id="idea-name-<?php echo $row->id ?>"><?php echo $row->name; ?> </h3></div>
                     <div class="alert alert-error idea-error" id="idea-error-<?php echo $row->id ?>">></div>
 					<div class="span2">					
 						<button class="votegoodbutton btn btn-inverse" id="voteGood-<?php echo $row->id ?>"  value="<?php echo $row->id ?>" >
@@ -37,10 +37,8 @@ foreach($ideas as $row): ?>
 					<div class="total-score">
 							<span class="voter pink clearfix" id="idea-total-id-<?php echo $row->id ?>"><?php echo ($good -$bad) ?></span>				
 					</div>
-					<br class="clearfix">	
-					<br class="clearfix">	
-					<br class="clearfix">						
-					<div class="ideainfo" style="color:black" id="ideacell-<?php echo $row->id ?>"> <button class="commentcell" id="commentbutton-<?php echo $row->id ?>"> Show Comments</button> </div>	
+											
+					<div class="ideainfo" style="color:black" id="ideacell-<?php echo $row->id ?>">  </div>	
 					<div class="well well-small clearfix comment-area dropdown-toggle" data-toggle="dropdown" id="comment-area-<?php echo $row->id ?>" >
 						<div class="alert" style="margin-bottom: 2px;">
 							<form class="form" id="comment-form-<?php echo $row->id ?>">					
@@ -61,6 +59,7 @@ foreach($ideas as $row): ?>
 		<? endif; ?>
 		<?php $count += 1; ?>
 <? endforeach; ?>
+
 			
  
 							

@@ -2,7 +2,7 @@
 <div class="container-fluid"> 
 
   <div class="row-fluid">        
-      <h3 class="pink">Last year we had <?php echo count($ideas) ?> brilliant ideas!</h3>        
+      <h3 class="pink">Last year we had <?php echo count($ideas) ?> brilliant ideas!</h3>            
       <div>                                              
                <?php              
                      if(count($ideas)>0){ 
@@ -220,4 +220,3 @@ function getTotal(ideaId)
 
 </script>
 <?php $this->load->view('common/footer') ?>
-

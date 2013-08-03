@@ -5,9 +5,9 @@
   ?>    
 
   <div class="row-fluid">        
-      <h3 class="pink">Vote for the idea</h3>        
-        
-               <?php 
+      <h2>Vote for the idea</h2>        
+      <div id="myCarousel1" class="carousel1 slide1">                                              
+               <?php              
                      if(count($ideas)>0){ 
                         $data = array(
                           'ideas' => $ideas,
@@ -17,8 +17,14 @@
                           'perpage' => $this->idea_model->max_rows
                           );          
                       $this->load->view('ideas/idea_view', $data);
-                }?>               
-   
+                }else{
+                   
+                  ?> <div class="alert caption"> Ideas have been archived.  
+                  <a name="archive-ideas" href=<?php echo '"' . site_url('ideas/archive/'.$_SESSION['active_group_id']) . '" class="uppercase">'?> View Archived Ideas </a>   
+                  </div><?php
+                }?>                         
+     </div>
+  </div>
 </div> 
 
 <script type="text/javascript">
@@ -26,15 +32,12 @@ var page = 1;
 
 $(document).ready(function() {
   $(".idea-error").hide();
-  $(".comment-area").hide();
- 
+  //$(".comment-area").hide();    
 
-$('.commentcell').click(function() {
-    $(".comment-area").hide();
+$('.ideainfo').each(function() {
     var id = $(this).attr('id');
     var temp = id.indexOf('-');
     var ideaId = id.substring(temp+1);
-
     var _data = {
         idea: ideaId,
         ajax:1
@@ -58,10 +61,9 @@ $('.commentcell').click(function() {
       }
       
     });
-
-    return false;
-
 });
+
+
 
 
 
@@ -223,4 +225,3 @@ function getTotal(ideaId)
 
 </script>
 <?php $this->load->view('common/footer') ?>
-

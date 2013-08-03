@@ -67,7 +67,7 @@ class Ideas extends CI_Controller {
 
 			$data = array(
 		              'ideas' => $this->idea_model->get_idea_by_group($_SESSION['active_group_id']),
-		               'groups' =>$this->group_model->get_group($group_id)
+		              'groups' =>$this->group_model->get_group($group_id)
 		          );	
 
 			$this->load->view('ideas/single_idea_view', $data);
@@ -75,7 +75,6 @@ class Ideas extends CI_Controller {
 			show_404();
 		}
 	}
-
 
 	function archive($group_id){
 			
@@ -92,7 +91,6 @@ class Ideas extends CI_Controller {
 		}
 
 	}
-
 
 	function submit()
 	{
@@ -166,4 +164,3 @@ class Ideas extends CI_Controller {
 	}
 
 }
-

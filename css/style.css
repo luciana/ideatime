@@ -94,7 +94,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', end
           }          
   
           a, a:hover, a:active{
-            color: #F5385E;
+            /*color: #F5385E;*/
+            color: #FFF;
+            font-weight: bold;
           }
   
           .no-loggedin
