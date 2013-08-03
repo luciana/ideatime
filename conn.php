@@ -1,6 +1,6 @@
 <?php
 
- mysql_connect('localhost', 'chad_ideatime', 'Pr0gressive');  
- mysql_select_db('chad_ideatime');  
+ mysql_connect('localhost', 'root', 'root');  
+ mysql_select_db('_ideatime');  
 
                 ?>
